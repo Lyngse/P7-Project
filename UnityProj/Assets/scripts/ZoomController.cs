@@ -16,13 +16,18 @@ public class ZoomController : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 	
 
 	void Update () {
-		//if(buttonHold)
-  //      {
-  //          if (button.name == "ZoomInBtn")
-  //              ZoomIn();
-  //          if (button.name == "ZoomOutBtn")
-  //              ZoomOut();
-  //      }
+		if(buttonHold)
+        {
+            if (button.name == "ZoomInBtn")
+            {
+                if (cam.transform.position.y > 5)
+                {
+                    ZoomIn();
+                }
+            }
+            if (button.name == "ZoomOutBtn")
+                ZoomOut();
+        }
 	}
 
     //public void ButtonHold(BaseEventData eventData)
@@ -36,31 +41,23 @@ public class ZoomController : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 
     public void OnPointerDown(PointerEventData ped)
     {
-        if(button.name == "ZoomInBtn")
-        {
-            if(cam.transform.position.y > 5)
-            {
-                ZoomIn();
-            }
-        }
-        if(button.name == "ZoomOutBtn")
-            ZoomOut();
+        buttonHold = true;
     }
 
     public void OnPointerUp(PointerEventData ped)
     {
-        
+        buttonHold = false;
     }
 
     public void ZoomIn()
     {
-        cam.transform.Translate(transform.forward);
+        cam.transform.Translate(transform.forward * 0.5f);
         //cam.transform.position += Vector3.down * (Time.deltaTime * 40f);
     }
 
     public void ZoomOut()
     {
-        cam.transform.Translate(-(transform.forward));
+        cam.transform.Translate(-(transform.forward * 0.5f));
         //cam.transform.position += Vector3.up * (Time.deltaTime * 40f);
     }
 }
