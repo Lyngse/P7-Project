@@ -1,26 +1,66 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
-public class ZoomController : MonoBehaviour {
+public class ZoomController : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+{
+    private Button button;
+    private bool buttonHold = false;
+    public Camera cam;
 
-	// Use this for initialization
 	void Start () {
-		
+        button = GetComponent<Button>();
 	}
 	
-	// Update is called once per frame
+
 	void Update () {
-		
+		//if(buttonHold)
+  //      {
+  //          if (button.name == "ZoomInBtn")
+  //              ZoomIn();
+  //          if (button.name == "ZoomOutBtn")
+  //              ZoomOut();
+  //      }
 	}
+
+    //public void ButtonHold(BaseEventData eventData)
+    //{
+    //    buttonHold = true;
+    //}
+    //public void ButtonNotHold(BaseEventData eventData)
+    //{
+    //    buttonHold = false;
+    //}
+
+    public void OnPointerDown(PointerEventData ped)
+    {
+        if(button.name == "ZoomInBtn")
+        {
+            if(cam.transform.position.y > 5)
+            {
+                ZoomIn();
+            }
+        }
+        if(button.name == "ZoomOutBtn")
+            ZoomOut();
+    }
+
+    public void OnPointerUp(PointerEventData ped)
+    {
+        
+    }
 
     public void ZoomIn()
     {
-        transform.Translate(transform.forward);
+        cam.transform.Translate(transform.forward);
+        //cam.transform.position += Vector3.down * (Time.deltaTime * 40f);
     }
 
     public void ZoomOut()
     {
-        transform.Translate(-(transform.forward));
+        cam.transform.Translate(-(transform.forward));
+        //cam.transform.position += Vector3.up * (Time.deltaTime * 40f);
     }
 }
