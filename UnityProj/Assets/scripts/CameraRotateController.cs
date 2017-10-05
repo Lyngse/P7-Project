@@ -26,13 +26,11 @@ public class CameraRotateController : MonoBehaviour
         plane.Raycast(ray, out distance);
         worldPoint = ray.GetPoint(distance);
 
-        //Debug.Log(worldPoint);
-
         MoveVector = MoveInput();
         
         if(MoveVector.x != 0)
         {
-            transform.RotateAround(worldPoint, Vector3.up, -speed * Time.deltaTime * MoveVector.x);
+            transform.RotateAround(worldPoint, Vector3.up, -speed * Time.deltaTime * MoveVector.x); 
         }
 
         if(MoveVector.z != 0)

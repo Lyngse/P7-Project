@@ -27,13 +27,13 @@ public class VirtualJoyStickController : MonoBehaviour, IDragHandler, IPointerUp
             //inputVector = new Vector3((pos.x - 0.5f) * 2, 0.0f, (pos.y - 0.5f) * 2);
             if(joyStickBackground.name == "JoyStickBackgroundLeft")
             {
-                inputVector.x = (pos.x - 0.5f) * 2;
+                inputVector.x = (pos.x) * 2;
                 inputVector.z = (pos.y - 0.5f) * 2;
                 inputVector.y = 0.0f;
                 inputVector = (inputVector.magnitude > 1.0f) ? inputVector.normalized : inputVector;
             } else
             {
-                inputVector.x = (pos.x + 0.5f) * 2;
+                inputVector.x = (pos.x) * 2;
                 inputVector.z = (pos.y - 0.5f) * 2;
                 inputVector.y = 0.0f;
                 inputVector = (inputVector.magnitude > 1.0f) ? inputVector.normalized : inputVector;
