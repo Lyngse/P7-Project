@@ -6,16 +6,17 @@ using UnityEngine.UI;
 
 public class CameraRotateController : MonoBehaviour
 {
-    public int speed = 20;
+    public int speed;
     public Vector3 MoveVector = Vector3.zero;
     public VirtualJoyStickController joyStick;
     private Plane plane = new Plane(Vector3.up, Vector3.zero);
     private Vector3 worldPoint;
     private float screenHeight = Screen.height / 2f;
+    private Quaternion qt;
 
     private void Start()
     {
-
+        
     }
 
     private void Update()
@@ -29,39 +30,54 @@ public class CameraRotateController : MonoBehaviour
 
         MoveVector = MoveInput();
         
-        if (Mathf.Abs(MoveVector.x) > Mathf.Abs(MoveVector.z))
+        if(MoveVector.x != 0)
         {
-            if (MoveVector.x > 0)
-            {
-                transform.RotateAround(worldPoint, Vector3.down, speed * Time.deltaTime);
-            }
-            if (MoveVector.x < 0)
-            {
-                transform.RotateAround(worldPoint, Vector3.up, speed * Time.deltaTime);
-            }
+            transform.RotateAround(worldPoint, Vector3.up, -speed * Time.deltaTime * MoveVector.x);
         }
-        else if(Mathf.Abs(MoveVector.x) < Mathf.Abs(MoveVector.z))
+
+        if(MoveVector.z != 0)
         {
-            if(transform.position.y > 5.0f)
+            float newAngle = transform.rotation.eulerAngles.x + speed * Time.deltaTime * MoveVector.z;
+            
+            if (newAngle < 90 && newAngle > 15)
             {
-                if(transform.rotation.x < 90.0f)
-                {
-                    if (MoveVector.z > 0)
-                    {
-                        transform.RotateAround(worldPoint, Vector3.right, speed * Time.deltaTime);
-                    }
-                    if (MoveVector.z < 0)
-                    {
-                        transform.RotateAround(worldPoint, Vector3.left, speed * Time.deltaTime);
-                    }
-                }
-            }
-            else
-            {
-                transform.RotateAround(worldPoint, Vector3.right, 0.5f);
+                
+                transform.RotateAround(worldPoint, transform.right, speed * Time.deltaTime * MoveVector.z);
             }
         }
 
+        //if (Mathf.Abs(MoveVector.x) > Mathf.Abs(MoveVector.z))
+        //{
+        //    if (MoveVector.x > 0)
+        //    {
+        //        transform.RotateAround(worldPoint, Vector3.down, speed * Time.deltaTime);
+        //    }
+        //    if (MoveVector.x < 0)
+        //    {
+        //        transform.RotateAround(worldPoint, Vector3.up, speed * Time.deltaTime);
+        //    }
+        //}
+        //else if(Mathf.Abs(MoveVector.x) < Mathf.Abs(MoveVector.z))
+        //{
+        //    if(transform.position.y > 5.0f)
+        //    {
+        //        if(transform.eulerAngles.y < 90.0f)
+        //        {
+        //            if (MoveVector.z > 0)
+        //            {
+        //                transform.RotateAround(worldPoint, Vector3.right, speed * Time.deltaTime);
+        //            }
+        //            if (MoveVector.z < 0)
+        //            {
+        //                transform.RotateAround(worldPoint, Vector3.left, speed * Time.deltaTime);
+        //            }
+        //        }
+        //    }
+        //    else
+        //    {
+        //        transform.RotateAround(worldPoint, Vector3.right, 0.5f);
+        //    }
+        //}
     }
 
 
