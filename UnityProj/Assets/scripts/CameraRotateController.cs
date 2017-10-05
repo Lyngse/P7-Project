@@ -40,17 +40,25 @@ public class CameraRotateController : MonoBehaviour
                 transform.RotateAround(worldPoint, Vector3.up, speed * Time.deltaTime);
             }
         }
-        else
+        else if(Mathf.Abs(MoveVector.x) < Mathf.Abs(MoveVector.z))
         {
-            if (MoveVector.z > 0)
+            if(transform.position.y > 5.0f)
             {
-                Vector3 rotateValue = new Vector3(MoveVector.z, 0, 0);
-                transform.eulerAngles = transform.eulerAngles - rotateValue;
+                if(transform.rotation.x < 90.0f)
+                {
+                    if (MoveVector.z > 0)
+                    {
+                        transform.RotateAround(worldPoint, Vector3.right, speed * Time.deltaTime);
+                    }
+                    if (MoveVector.z < 0)
+                    {
+                        transform.RotateAround(worldPoint, Vector3.left, speed * Time.deltaTime);
+                    }
+                }
             }
-            if (MoveVector.z < 0)
+            else
             {
-                Vector3 rotateValue = new Vector3(MoveVector.z, 0, 0);
-                transform.eulerAngles = transform.eulerAngles - rotateValue;
+                transform.RotateAround(worldPoint, Vector3.right, 0.5f);
             }
         }
 
