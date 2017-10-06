@@ -18,10 +18,11 @@ public class CameraMovementController : MonoBehaviour
     private void Update()
     {
         MoveVector = MoveInput();
+        MoveVector = RotateWithView();
 
         if (MoveVector.x != 0 || MoveVector.z != 0)
         {
-            //transform.Translate((new Vector3(MoveVector.x * speed * Time.deltaTime, MoveVector.z * speed * Time.deltaTime, 0)));
+            //transform.Translate((new Vector3(MoveVector.x * speed * Time.deltaTime, 0, MoveVector.z * speed * Time.deltaTime)));
             rb.AddForce(MoveVector * speed);
         }
         rb.AddForce(Vector3.zero);
@@ -38,6 +39,12 @@ public class CameraMovementController : MonoBehaviour
             dir.Normalize();
 
         return dir;
+    }
 
+    private Vector3 RotateWithView()
+    {
+        Vector3 dir = transform.TransformDirection(MoveVector);
+        dir.Set(dir.x, 0, dir.z);
+        return dir.normalized * MoveVector.magnitude;
     }
 }
