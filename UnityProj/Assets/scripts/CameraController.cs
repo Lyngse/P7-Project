@@ -67,27 +67,33 @@ public class CameraController : MonoBehaviour
                 Vector2 currentPosTwo = touch2.position;
                 Vector2 oldPosTwo = touch2.position - touch2.deltaPosition;
 
-                Zoom(currentPosOne - currentPosTwo, oldPosOne - oldPosTwo);
 
                 float angle = Vector2.Angle(touch1.deltaPosition, touch2.deltaPosition);
 
-                if (angle < 30)
+                Vector2 deltaVector;
+                if (touch1.deltaPosition.magnitude <= touch2.deltaPosition.magnitude)
                 {
-                    Vector2 deltaVector;
-                    if (touch1.deltaPosition.magnitude <= touch2.deltaPosition.magnitude)
-                    {
-                        deltaVector = touch1.deltaPosition;
-                    }
-                    else
-                    {
-                        deltaVector = touch2.deltaPosition;
-                    }
+                    deltaVector = touch1.deltaPosition;
+                }
+                else
+                {
+                    deltaVector = touch2.deltaPosition;
+                }
 
-                    Vector3 planeTargetPoint = screenToPlane(new Vector2(Screen.width / 2.0f, Screen.height / 2.0f));
+                Vector3 planeTargetPoint = screenToPlane(new Vector2(Screen.width / 2.0f, Screen.height / 2.0f));
+
+                //Zoom(currentPosOne - currentPosTwo, oldPosOne - oldPosTwo);
+
+                if (angle < 30)
+                {  
                     if (deltaVector.x != 0)
                     {
-                        float rotationAroundY = (deltaVector.x / Screen.width) * 180;
-                        transform.RotateAround(planeTargetPoint, Vector3.up, rotationAroundY);
+                        float rotationAroundFront = (deltaVector.x / Screen.height) * 90;
+                        Debug.Log(transform.rotation.eulerAngles.x);
+                        if(transform.rotation.eulerAngles.x - rotationAroundFront < 90 && transform.rotation.eulerAngles.x - rotationAroundFront > 15)
+                        {
+                            transform.RotateAround(planeTargetPoint, transform.up, rotationAroundFront);
+                        }
                     }
                     if (deltaVector.y != 0)
                     {
@@ -98,9 +104,11 @@ public class CameraController : MonoBehaviour
                         }
 
                     }
-
-
-
+                }
+                else
+                {
+                    float rotationAroundZ = (Mathf.Max(deltaVector.y, deltaVector.x) / Screen.width) * 1800;
+                    transform.RotateAround(planeTargetPoint, Vector3.up, rotationAroundZ);
                 }
 
             }
