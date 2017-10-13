@@ -8,10 +8,12 @@ public class CameraController : MonoBehaviour
     private Touch[] touches;
     private Camera cam;
     private Vector2 lastScreenPos;
+    private Vector2 lastDeltaVector;
     public float speedLimit;
     private int numberOfTouches = 0;
     public float heighLimit;
     public float zoomSpeed;
+    public float rotationSpeed;
 
     // Use this for initialization
     void Start()
@@ -70,8 +72,10 @@ public class CameraController : MonoBehaviour
 
                 float angle = Vector2.Angle(touch1.deltaPosition, touch2.deltaPosition);
 
+                var diffVector = touch1.position - touch2.position;
+
                 Vector2 deltaVector;
-                if (touch1.deltaPosition.magnitude <= touch2.deltaPosition.magnitude)
+                if (touch1.deltaPosition.magnitude >= touch2.deltaPosition.magnitude)
                 {
                     deltaVector = touch1.deltaPosition;
                 }
@@ -82,33 +86,79 @@ public class CameraController : MonoBehaviour
 
                 Vector3 planeTargetPoint = screenToPlane(new Vector2(Screen.width / 2.0f, Screen.height / 2.0f));
 
-                //Zoom(currentPosOne - currentPosTwo, oldPosOne - oldPosTwo);
+                
 
-                if (angle < 30)
-                {  
-                    if (deltaVector.x != 0)
+                if (angle < 30) 
+                {
+                    
+                    float rotationX = (deltaVector.x / Screen.height) * 90;
+                    float rotationY = (deltaVector.y / Screen.height) * 90;
+
+                    Vector3 localRotationX = transform.up * rotationX;
+                    Vector3 localRotationY = transform.right * -rotationY;
+
+                    Vector3 rotationVector = localRotationX + localRotationY;
+                    
+
+                    transform.RotateAround(planeTargetPoint, rotationVector.normalized, rotationVector.magnitude);
+                    
+                    if(transform.rotation.eulerAngles.x < 15)
                     {
-                        float rotationAroundFront = (deltaVector.x / Screen.height) * 90;
-                        Debug.Log(transform.rotation.eulerAngles.x);
-                        if(transform.rotation.eulerAngles.x - rotationAroundFront < 90 && transform.rotation.eulerAngles.x - rotationAroundFront > 15)
+                        transform.RotateAround(planeTargetPoint, -rotationVector.normalized, rotationVector.magnitude);
+                    }
+                }
+
+
+                if(angle > 100  && Vector2.Angle(diffVector, deltaVector) > 45 && Vector2.Angle(diffVector, deltaVector) < 135)
+                {
+
+                    
+
+                    if(Mathf.Abs(diffVector.x) > Mathf.Abs(diffVector.y))
+                    {
+                        var v = new Vector2();
+                        if(diffVector.x > 0)
                         {
-                            transform.RotateAround(planeTargetPoint, transform.up, rotationAroundFront);
+                            v = touch1.deltaPosition;
+                        }
+                        else
+                        {
+                            v = touch2.deltaPosition;
+                        }
+                        if(v.y > 0)
+                        {
+                            transform.Rotate(new Vector3(0, 0, -(touch1.deltaPosition - touch2.deltaPosition).magnitude) * rotationSpeed);
+                        }
+                        else
+                        {
+                            transform.Rotate(new Vector3(0, 0, (touch1.deltaPosition - touch2.deltaPosition).magnitude) * rotationSpeed);
                         }
                     }
-                    if (deltaVector.y != 0)
+                    else
                     {
-                        float rotationAroundRight = (deltaVector.y / Screen.height) * 90;
-                        if (transform.rotation.eulerAngles.x - rotationAroundRight < 90 && transform.rotation.eulerAngles.x - rotationAroundRight > 15)
+                        var v = new Vector2();
+                        if (diffVector.y > 0)
                         {
-                            transform.RotateAround(planeTargetPoint, transform.right, -rotationAroundRight);
+                            v = touch2.deltaPosition;
                         }
-
+                        else
+                        {
+                            v = touch1.deltaPosition;
+                        }
+                        if (v.x > 0)
+                        {
+                            transform.Rotate(new Vector3(0, 0, -(touch1.deltaPosition + touch2.deltaPosition).magnitude) * rotationSpeed);
+                        }
+                        else
+                        {
+                            transform.Rotate(new Vector3(0, 0, (touch1.deltaPosition + touch2.deltaPosition).magnitude) * rotationSpeed);
+                        }
                     }
                 }
                 else
                 {
-                    float rotationAroundZ = (Mathf.Max(deltaVector.y, deltaVector.x) / Screen.width) * 1800;
-                    transform.RotateAround(planeTargetPoint, Vector3.up, rotationAroundZ);
+                    float deltaDist = (currentPosOne - currentPosTwo).magnitude - (oldPosOne - oldPosTwo).magnitude;
+                    Zoom(deltaDist);
                 }
 
             }
@@ -119,16 +169,18 @@ public class CameraController : MonoBehaviour
 
 
 
-    private void Zoom(Vector2 newDistVector, Vector2 oldDistVector)
+    private void Zoom(float deltaDist)
     {
-        float deltaDist = newDistVector.magnitude - oldDistVector.magnitude;
+        
+        //if(Mathf.Abs(deltaDist) > 5) {
+            Vector3 pos = transform.position + transform.forward.normalized * deltaDist * zoomSpeed;
 
-        Vector3 pos = transform.position + transform.forward.normalized * deltaDist * zoomSpeed;
-
-        if (pos.y > heighLimit)
-        {
-            transform.position = pos;
-        }
+            if (pos.y > heighLimit)
+            {
+                transform.position = pos;
+            }
+        //}
+        
     }
 
     private Vector3 screenToPlane(Vector2 screenPoint)
