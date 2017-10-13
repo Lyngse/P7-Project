@@ -68,10 +68,9 @@ public class CameraController : MonoBehaviour
 
                 Vector2 currentPosTwo = touch2.position;
                 Vector2 oldPosTwo = touch2.position - touch2.deltaPosition;
-
+                
 
                 float angle = Vector2.Angle(touch1.deltaPosition, touch2.deltaPosition);
-
                 var diffVector = touch1.position - touch2.position;
 
                 Vector2 deltaVector;
