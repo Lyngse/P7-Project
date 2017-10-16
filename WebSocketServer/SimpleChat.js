@@ -26,9 +26,10 @@ wss.on('connection', function connection(ws, req) {
 // Needs error handling
 wss.on('connection', function connection(ws) {
   ws.on('message', function incoming(data) {
+
     console.log("Debug1: " + data);
     var message = JSON.parse(data);
-    console.log("Debug2: " + message.type + " " + message.reciever);
+    console.log("Debug2: " + message.type + ": " + message.message);
     
     if(message.type === 'forward'){
       console.log("Debug3: " );

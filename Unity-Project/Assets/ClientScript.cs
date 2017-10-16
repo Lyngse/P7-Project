@@ -7,7 +7,6 @@ using WebSocketSharp;
 public class ClientScript : MonoBehaviour {
 
     WebSocket webSocket = new WebSocket("ws://192.168.0.100:5000");
-    WebSocket webSocket2 = new WebSocket("ws://192.168.0.100:5000");
     List<string> chatClients = new List<string>();
     private bool hasSent = false;
 
@@ -27,9 +26,9 @@ public class ClientScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	    if (webSocket.ReadyState == WebSocketState.Open && hasSent == false && chatClients.Count != 0)
+	    if (webSocket.ReadyState == WebSocketState.Open && hasSent == false && chatClients.Count > 1)
 	    {
-	        messageObject testMessage = new messageObject("forward", chatClients[0]);
+	        messageObject testMessage = new messageObject("forward", chatClients[1], "Søren sucks");
 	        var jsonMessage = JsonUtility.ToJson(testMessage);
 	        webSocket.Send(jsonMessage);
 	        hasSent = true;
@@ -50,11 +49,13 @@ public class ClientScript : MonoBehaviour {
         // Possibly make the type an enum
         public string type;
         public string reciever;
+        public string message;
 
-        public messageObject(string thisType, string thisReciever)
+        public messageObject(string thisType, string thisReciever, string thisMessage = "")
         {
             type = thisType;
             reciever = thisReciever;
+            message = thisMessage;
         }
     }
 
