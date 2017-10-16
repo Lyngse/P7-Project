@@ -30,15 +30,6 @@ public class ZoomController : MonoBehaviour, IPointerDownHandler, IPointerUpHand
         }
 	}
 
-    //public void ButtonHold(BaseEventData eventData)
-    //{
-    //    buttonHold = true;
-    //}
-    //public void ButtonNotHold(BaseEventData eventData)
-    //{
-    //    buttonHold = false;
-    //}
-
     public void OnPointerDown(PointerEventData ped)
     {
         buttonHold = true;
