@@ -6,16 +6,22 @@ var dict = {};
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
 
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+  });
+
 app.route('/host')
     .post(function(req, res) {
         var data = req.body;
         if(!data){
-            res.send("no data");
+            res.send({error:"no data"});
         }
-
+        console.log(req.ip);
         var ip = data.ip;
         if(!ip){
-            res.send("no ip!");
+            res.send({error:"no ip!"});
         }
 
         do{
@@ -34,18 +40,18 @@ app.route('/connect')
     .post(function(req, res) {
         var data = req.body;
         if(!data){
-            res.send("no data");
+            res.send({error:"no data"});
         }
 
         var code = data.code;
 
         if(!code)
-            res.send("no code bro!");
+            res.send({error: "no code bro!"});
         
         var ip = dict[code];
 
         if(!ip){
-            res.send("no match");
+            res.send({error: "no match"});
         }
 
         res.json({ip: ip});
