@@ -10,7 +10,7 @@ public class VirtualJoyStickDragController : MonoBehaviour, IDragHandler, IPoint
     public Vector3 inputVector;
     private Vector3 pos;
     public string lastPosition = "bottom";
-    private string currentPosition = "bottom";
+    public string currentPosition = "bottom";
     public Camera cam;
     Vector2 localCursor;
 

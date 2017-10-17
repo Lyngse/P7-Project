@@ -9,6 +9,7 @@ public class CameraMovementController : MonoBehaviour
     public Vector3 MoveVector = Vector3.zero;
     public VirtualJoyStickController joyStick;
     public Rigidbody rb;
+    public VirtualJoyStickDragController vjdc;
 
     private void Start()
     {
@@ -23,9 +24,17 @@ public class CameraMovementController : MonoBehaviour
         if (MoveVector.x != 0 || MoveVector.z != 0)
         {
             //transform.Translate((new Vector3(MoveVector.x * speed * Time.deltaTime, 0, MoveVector.z * speed * Time.deltaTime)));
+            if(vjdc.currentPosition == "top")
+            {
+                MoveVector.x = -1 * MoveVector.x;
+            }
+            if(vjdc.currentPosition == "left")
+            {
+                
+            }
             rb.AddForce(MoveVector * speed);
         }
-        rb.AddForce(Vector3.zero);
+        //rb.AddForce(Vector3.zero);
     }
 
 
