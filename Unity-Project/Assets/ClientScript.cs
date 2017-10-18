@@ -6,13 +6,15 @@ using WebSocketSharp;
 
 public class ClientScript : MonoBehaviour {
 
-    WebSocket webSocket = new WebSocket("ws://192.168.0.100:5000");
+    WebSocket webSocket = new WebSocket("ws://localhost:5000");
     List<string> chatClients = new List<string>();
     private bool hasSent = false;
 
     // Use this for initialization
-    void Start () {
-        webSocket.Connect();
+    void Start ()
+    {
+        StartServer();
+        webSocket.ConnectAsync();
 
         webSocket.OnMessage += (sender, e) =>
         {
@@ -30,9 +32,18 @@ public class ClientScript : MonoBehaviour {
 	    {
 	        messageObject testMessage = new messageObject("forward", chatClients[1], "Søren sucks");
 	        var jsonMessage = JsonUtility.ToJson(testMessage);
-	        webSocket.Send(jsonMessage);
+	        //webSocket.Send(jsonMessage);
 	        hasSent = true;
 	    }
+
+    }
+
+    private void StartServer()
+    {
+        var process = new System.Diagnostics.Process();
+        process.StartInfo.FileName = @".\..\webSocketServer\startserver.bat";
+        process.StartInfo.WorkingDirectory = @".\..\webSocketServer";
+        process.Start();
 
     }
 

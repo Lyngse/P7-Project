@@ -3,6 +3,8 @@ var ip = require('ip');
 var http = require('http');
 var querystring = require('querystring');
 var request = require('request');
+var localWs;
+var serverCode;
 const serverPort = 5000;
 const wss = new WebSocket.Server({ port: serverPort });
 console.log('Server started on: ' + ip.address() + ' on port: ' + serverPort);
@@ -20,22 +22,28 @@ wss.broadcast = function broadcast(data) {
 // This function adds the remote address to each connection for later use
 wss.on('connection', function connection(ws, req) {
   console.log(req.connection.remoteAddress + " joined the chat\n");
-  wss.broadcast(req.connection.remoteAddress);
   ws.remoteAddress = req.connection.remoteAddress;
-});
 
-/* This function adds the remote address to each connection for later use
-wss.on('connection', function connection(ws, req) {
-  console.log(req.connection.remoteAddress  + " joined the chat\n");
-  wss.broadcast(req.connection.remoteAddress);
-  
-  wss.clients.forEach(function each(client) {
-    if (client === ws) {
-      client.remoteAddress = req.connection.remoteAddress;
-    }
-  });
+  //console.log(req.connection);
+  if (req.connection.remoteAddress == "::1" || req.connection.remoteAddress == "::ffff:127.0.0.1") {
+
+    getServerCode((error, response, body) => {
+      //if (!error && response.statusCode == 200) {
+      console.log(body);
+
+      if (body.success) {
+        serverCode = body.data.code;
+        console.log(serverCode);
+        ws.send(serverCode);
+      }
+      else {
+
+      }
+    });
+    
+  }
+
 });
-*/
 
 // This function forwards messages to a specified client
 // Needs error handling
@@ -71,12 +79,12 @@ wss.on('connection', function connection(ws) {
   });
 });
 
-// This function sends all the connected clients' ips to the new client
+/* This function sends all the connected clients' ips to the new client
 wss.on('connection', function connection(ws) {
   wss.clients.forEach(function each(client) {
     ws.send(client.remoteAddress);
   });
-});
+});*/
 
 
 
@@ -86,28 +94,16 @@ wss.on('connection', function connection(ws) {
 
 
 
-var serverCode;
-
-request.post(
-  'https://p7-webserver.herokuapp.com/api/host',
-  //'http://localhost:3000/api/host',
-  { json: { ip: ip.address() } },
-  function (error, response, body) {
-    //if (!error && response.statusCode == 200) {
-    console.log(body);
-    console.log(body.hasOwnProperty('data'));
-
-    if (body.success) {
-      serverCode = body.data.code;
-      console.log(serverCode);
-    }
-    else{
-      
-    }
 
 
-  }
-);
+function getServerCode(callback) {
+  request.post(
+    'https://p7-webserver.herokuapp.com/api/host',
+    //'http://localhost:3000/api/host',
+    { json: { ip: ip.address() , port : serverPort} },
+    callback
+  );
+}
 
 
 
