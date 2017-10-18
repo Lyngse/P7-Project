@@ -70,4 +70,9 @@ public class VirtualJoyStickController : MonoBehaviour, IDragHandler, IPointerUp
         else
             return Input.GetAxis("Vertical");
     }
+
+    public Vector3 InputVector()
+    {
+        return inputVector;
+    }
 }
