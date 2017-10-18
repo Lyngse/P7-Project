@@ -10,14 +10,12 @@ export class AppComponent {
 
   constructor(){
     console.log("hey");
-    let socket = new WebSocket("ws://192.168.0.100:5000");
+    let socket = new WebSocket("ws://localhost:5000");
     socket.addEventListener('message', (event) => {
       console.log(event.data);
     });
     socket.addEventListener('open', () => {
-      socket.send(
-        JSON.stringify({type:"message", message:"Hello from Angular"})
-      );
+      socket.send("hello from angular");
       
     });
     
