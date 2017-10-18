@@ -61,7 +61,7 @@ wss.on('connection', function connection(ws) {
     }
 
 
-    console.log("Debug2: " + message.type + ": " + message.message);
+    console.log("Debug2: " + data);
     if (message === null) {
       if (message.type === 'forward') {
         console.log("Debug3: ");
@@ -96,11 +96,11 @@ wss.on('connection', function connection(ws) {
 
 
 
-function getServerCode(callback) {
+getServerCode = (callback) => {
   request.post(
     'https://p7-webserver.herokuapp.com/api/host',
     //'http://localhost:3000/api/host',
-    { json: { ip: ip.address() , port : serverPort} },
+    { json: { ip: ip.address() , port : this.serverPort} },
     callback
   );
 }
