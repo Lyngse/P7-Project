@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
+﻿using UnityEngine;
 
 public class CameraRotateController : MonoBehaviour
 {
@@ -11,8 +7,7 @@ public class CameraRotateController : MonoBehaviour
     public VirtualJoyStickController joyStick;
     private Plane plane = new Plane(Vector3.up, Vector3.zero);
     private Vector3 worldPoint;
-    private float screenHeight = Screen.height / 2f;
-    private Quaternion qt;
+    public VirtualJoyStickDragController vjdc;
 
     private void Start()
     {
@@ -36,46 +31,19 @@ public class CameraRotateController : MonoBehaviour
         if(MoveVector.z != 0)
         {
             float newAngle = transform.rotation.eulerAngles.x + speed * Time.deltaTime * MoveVector.z;
-            
+
             if (newAngle < 90 && newAngle > 15)
             {
-                
-                transform.RotateAround(worldPoint, transform.right, speed * Time.deltaTime * MoveVector.z);
+                if (vjdc.lastPosition == "bottom")
+                    transform.RotateAround(worldPoint, transform.right, speed * Time.deltaTime * MoveVector.z);
+                else if(vjdc.lastPosition == "top")
+                    transform.RotateAround(worldPoint, -(transform.right), speed * Time.deltaTime * MoveVector.z);
+                else if(vjdc.lastPosition == "right")
+                    transform.RotateAround(worldPoint, transform.up, speed * Time.deltaTime * MoveVector.z);
+                else
+                    transform.RotateAround(worldPoint, -(transform.up), speed * Time.deltaTime * MoveVector.z);
             }
         }
-
-        //if (Mathf.Abs(MoveVector.x) > Mathf.Abs(MoveVector.z))
-        //{
-        //    if (MoveVector.x > 0)
-        //    {
-        //        transform.RotateAround(worldPoint, Vector3.down, speed * Time.deltaTime);
-        //    }
-        //    if (MoveVector.x < 0)
-        //    {
-        //        transform.RotateAround(worldPoint, Vector3.up, speed * Time.deltaTime);
-        //    }
-        //}
-        //else if(Mathf.Abs(MoveVector.x) < Mathf.Abs(MoveVector.z))
-        //{
-        //    if(transform.position.y > 5.0f)
-        //    {
-        //        if(transform.eulerAngles.y < 90.0f)
-        //        {
-        //            if (MoveVector.z > 0)
-        //            {
-        //                transform.RotateAround(worldPoint, Vector3.right, speed * Time.deltaTime);
-        //            }
-        //            if (MoveVector.z < 0)
-        //            {
-        //                transform.RotateAround(worldPoint, Vector3.left, speed * Time.deltaTime);
-        //            }
-        //        }
-        //    }
-        //    else
-        //    {
-        //        transform.RotateAround(worldPoint, Vector3.right, 0.5f);
-        //    }
-        //}
     }
 
 
@@ -89,6 +57,5 @@ public class CameraRotateController : MonoBehaviour
             dir.Normalize();
 
         return dir;
-
     }
 }

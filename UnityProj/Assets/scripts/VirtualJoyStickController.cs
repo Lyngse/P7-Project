@@ -39,7 +39,7 @@ public class VirtualJoyStickController : MonoBehaviour, IDragHandler, IPointerUp
                 inputVector = (inputVector.magnitude > 1.0f) ? inputVector.normalized : inputVector;
             }
 
-            //Move JoyStick 13.17 https://www.youtube.com/watch?v=uSnZuBhOA2U , https://www.youtube.com/watch?v=N34eNLzzfvQ
+            //Move JoyStick
             joyStick.rectTransform.anchoredPosition = new Vector3(inputVector.x * (joyStickBackground.rectTransform.sizeDelta.x / 3f), inputVector.z * (joyStickBackground.rectTransform.sizeDelta.y / 3f));
         }
     }
@@ -71,5 +71,8 @@ public class VirtualJoyStickController : MonoBehaviour, IDragHandler, IPointerUp
             return Input.GetAxis("Vertical");
     }
 
-
+    public Vector3 InputVector()
+    {
+        return inputVector;
+    }
 }

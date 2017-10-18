@@ -9,6 +9,7 @@ public class CameraMovementController : MonoBehaviour
     public Vector3 MoveVector = Vector3.zero;
     public VirtualJoyStickController joyStick;
     public Rigidbody rb;
+    public VirtualJoyStickDragController vjdc;
 
     private void Start()
     {
@@ -18,16 +19,33 @@ public class CameraMovementController : MonoBehaviour
     private void Update()
     {
         MoveVector = MoveInput();
-        MoveVector = RotateWithView();
 
         if (MoveVector.x != 0 || MoveVector.z != 0)
         {
-            //transform.Translate((new Vector3(MoveVector.x * speed * Time.deltaTime, 0, MoveVector.z * speed * Time.deltaTime)));
-            rb.AddForce(MoveVector * speed);
-        }
-        rb.AddForce(Vector3.zero);
-    }
+            Vector3 localRight = new Vector3();
+            if(vjdc.currentPosition == "bottom")
+            {
+                localRight = transform.right;
+            }
+            if (vjdc.currentPosition == "top")
+            {
+                localRight = -transform.right;
+            }
+            if (vjdc.currentPosition == "left")
+            {
+                localRight = -transform.up;
+            }
+            if(vjdc.currentPosition == "right")
+            {
+                localRight = transform.up;
+            }
 
+            Vector3 localUp = new Vector3(-localRight.z, 0, localRight.x);
+
+            Vector3 actualMove = localUp * MoveVector.z + localRight * MoveVector.x;
+            rb.AddForce(actualMove * speed);
+        }
+    }
 
     private Vector3 MoveInput()
     {
@@ -39,12 +57,5 @@ public class CameraMovementController : MonoBehaviour
             dir.Normalize();
 
         return dir;
-    }
-
-    private Vector3 RotateWithView()
-    {
-        Vector3 dir = transform.TransformDirection(MoveVector);
-        dir.Set(dir.x, 0, dir.z);
-        return dir.normalized * MoveVector.magnitude;
     }
 }
