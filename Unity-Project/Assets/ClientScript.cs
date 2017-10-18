@@ -5,26 +5,36 @@ using WebSocketSharp;
 
 
 public class ClientScript : MonoBehaviour {
-    
 
+    WebSocket webSocket = new WebSocket("ws://192.168.0.100:5000");
+    List<string> chatClients = new List<string>();
+    private bool hasSent = false;
 
     // Use this for initialization
     void Start () {
-        var ws = new WebSocket("ws://localhost:5000");
-        ws.Connect();
-        ws.OnMessage += recieveMessage;
-        string Json = JsonUtility.ToJson(new Vector2(3.0f, 5.0f));
-       
-        ws.SendAsync(Json, (success) => { });
+        webSocket.Connect();
+
+        webSocket.OnMessage += (sender, e) =>
+        {
+            Debug.Log("Node says: " + e.Data);
+            chatClients.Add(e.Data);
+        };
+
       
 
     }
 	
 	// Update is called once per frame
 	void Update () {
+	    if (webSocket.ReadyState == WebSocketState.Open && hasSent == false && chatClients.Count > 1)
+	    {
+	        messageObject testMessage = new messageObject("forward", chatClients[1], "Søren sucks");
+	        var jsonMessage = JsonUtility.ToJson(testMessage);
+	        webSocket.Send(jsonMessage);
+	        hasSent = true;
+	    }
 
-     
-	}
+    }
 
 
     public void recieveMessage(object sender, MessageEventArgs e)
@@ -34,10 +44,25 @@ public class ClientScript : MonoBehaviour {
         
     }
 
+    public class messageObject
+    {
+        // Possibly make the type an enum
+        public string type;
+        public string reciever;
+        public string message;
+
+        public messageObject(string thisType, string thisReciever, string thisMessage = "")
+        {
+            type = thisType;
+            reciever = thisReciever;
+            message = thisMessage;
+        }
+    }
 
 
 
-    
+
+
 
 
 }
