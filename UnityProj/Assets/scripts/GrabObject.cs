@@ -23,52 +23,40 @@ public class GrabObject : MonoBehaviour {
         {
             touches = Input.touches;
 
-            if(touches.Length >= 1)
+            foreach (Touch t in Input.touches)
             {
-                for (int i = 0; i < touches.Length; i++)
+                RaycastHit hit;
+                Ray ray = Camera.main.ScreenPointToRay(t.position);
+
+                if (t.phase == TouchPhase.Began)
                 {
-                    RaycastHit hit;
-                    Ray ray = Camera.main.ScreenPointToRay(touches[i].position);
-
-                    if(Physics.Raycast(ray, out hit))
+                    if (Physics.Raycast(ray, out hit))
+                        fingerIDs.Add(t.fingerId, hit.transform);
+                }
+                if (fingerIDs.ContainsKey(t.fingerId))
+                {
+                    if (t.phase == TouchPhase.Moved || t.phase == TouchPhase.Stationary)
                     {
-                        if(hit.transform.tag == "Dragable")
-                        {
-                            if (fingerIDs.ContainsKey(touches[i].fingerId))
-                            {
-                                if (!fingerIDs[touches[i].fingerId] == hit.transform)
-                                {
-                                    fingerIDs[touches[i].fingerId] = hit.transform;
-                                }
-                            }
-                            else
-                            {
-                                fingerIDs.Add(touches[i].fingerId, hit.transform);
-                            }
-                        }
-                    }
-
-                    if (touches[i].phase == TouchPhase.Moved)
-                    {
-                        Ray dragplaneRay = Camera.main.ScreenPointToRay(touches[i].position);
+                        Ray dragplaneRay = Camera.main.ScreenPointToRay(t.position);
                         float enter = 0;
                         dragPlane.Raycast(dragplaneRay, out enter);
-                        if (fingerIDs[touches[i].fingerId].tag == "Dragable")
+
+                        if (fingerIDs[t.fingerId].tag == "Dragable")
                         {
-                            fingerIDs[touches[i].fingerId].GetComponent<Rigidbody>().useGravity = false;
-                            fingerIDs[touches[i].fingerId].transform.position = dragplaneRay.GetPoint(enter);
+                            fingerIDs[t.fingerId].GetComponent<Rigidbody>().useGravity = false;
+                            fingerIDs[t.fingerId].transform.position = dragplaneRay.GetPoint(enter);
                         }
                     }
-                    else if (touches[i].phase == TouchPhase.Canceled || touches[i].phase == TouchPhase.Ended)
+                    else if (t.phase == TouchPhase.Canceled || t.phase == TouchPhase.Ended)
                     {
-                        if (fingerIDs[touches[i].fingerId].tag == "Dragable")
+                        if (fingerIDs[t.fingerId].tag == "Dragable")
                         {
-                            fingerIDs[touches[i].fingerId].GetComponent<Rigidbody>().useGravity = true;
+                            fingerIDs[t.fingerId].GetComponent<Rigidbody>().useGravity = true;
                         }
-                        fingerIDs.Remove(touches[i].fingerId);
+                        fingerIDs.Remove(t.fingerId);
                     }
                 }
-            }            
+            }        
         }
     }
 
