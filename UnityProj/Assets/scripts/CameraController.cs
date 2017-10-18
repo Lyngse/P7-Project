@@ -29,12 +29,10 @@ public class CameraController : MonoBehaviour
         {
             Touch touch = touches[0];
             Vector2 currentSreenPos = touch.position;
-
             if (numberOfTouches != 1)
             {
                 lastScreenPos = currentSreenPos;
             }
-
             else if (touch.phase == TouchPhase.Moved)
             {
                 Vector3 lastPlanePos = screenToPlane(lastScreenPos);
@@ -49,18 +47,13 @@ public class CameraController : MonoBehaviour
                     transform.position -= deltaPlanePos;
                 }
                 lastScreenPos = currentSreenPos;
-
             }
-
         }
 
         else if (touches.Length == 2)
         {
             Touch touch1 = touches[0];
             Touch touch2 = touches[1];
-
-
-
             if (touch1.phase == TouchPhase.Moved && touch2.phase == TouchPhase.Moved)
             {
                 Vector2 currentPosOne = touch1.position;
@@ -85,11 +78,8 @@ public class CameraController : MonoBehaviour
 
                 Vector3 planeTargetPoint = screenToPlane(new Vector2(Screen.width / 2.0f, Screen.height / 2.0f));
 
-                
-
                 if (angle < 30) 
-                {
-                    
+                {  
                     float rotationX = (deltaVector.x / Screen.height) * 90;
                     float rotationY = (deltaVector.y / Screen.height) * 90;
 
@@ -110,9 +100,6 @@ public class CameraController : MonoBehaviour
 
                 if(angle > 100  && Vector2.Angle(diffVector, deltaVector) > 45 && Vector2.Angle(diffVector, deltaVector) < 135)
                 {
-
-                    
-
                     if(Mathf.Abs(diffVector.x) > Mathf.Abs(diffVector.y))
                     {
                         var v = new Vector2();
@@ -159,18 +146,13 @@ public class CameraController : MonoBehaviour
                     float deltaDist = (currentPosOne - currentPosTwo).magnitude - (oldPosOne - oldPosTwo).magnitude;
                     Zoom(deltaDist);
                 }
-
             }
         }
-
         numberOfTouches = touches.Length;
     }
 
-
-
     private void Zoom(float deltaDist)
-    {
-        
+    {   
         //if(Mathf.Abs(deltaDist) > 5) {
             Vector3 pos = transform.position + transform.forward.normalized * deltaDist * zoomSpeed;
 
@@ -178,8 +160,7 @@ public class CameraController : MonoBehaviour
             {
                 transform.position = pos;
             }
-        //}
-        
+        //}  
     }
 
     private Vector3 screenToPlane(Vector2 screenPoint)
