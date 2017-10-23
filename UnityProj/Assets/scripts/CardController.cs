@@ -25,6 +25,8 @@ public class CardController : MonoBehaviour {
         }
     }
 
+
+    //Need to make a prefab of the card, which then can be spawned.
     public void DealToPlayerFromDeck(Deck deck)
     {
         if(deck.isFaceDown)
