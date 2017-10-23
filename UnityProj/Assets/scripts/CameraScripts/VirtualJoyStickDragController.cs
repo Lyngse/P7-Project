@@ -16,7 +16,8 @@ public class VirtualJoyStickDragController : MonoBehaviour, IDragHandler, IPoint
 
     // Use this for initialization
     void Start () {
-        joyStick = GetComponent<Image>();
+        Canvas canvas = transform.GetComponentInParent<Canvas>();
+        joyStick = canvas.transform.GetChild(0).GetComponent<Image>();
     }
 	
 	// Update is called once per frame
@@ -30,15 +31,17 @@ public class VirtualJoyStickDragController : MonoBehaviour, IDragHandler, IPoint
         pos.x = Input.mousePosition.x;
         pos.y = Input.mousePosition.y;
         pos.z = Input.mousePosition.z;
+        var X = (140 - 60); //An offset for the MovePad to "calculate" it to the joystick image's coordinate
+        var Y = (80 - 30); //An offset for the MovePad to "calculate" it to the joystick image's coordinate
 
         if (currentPosition == "top")
-            transform.position = new Vector3(pos.x + localCursor.x, pos.y + localCursor.y, pos.z);
+            joyStick.transform.position = new Vector3(pos.x + (localCursor.x + X), pos.y + (localCursor.y + Y), pos.z);
         if (currentPosition == "bottom")
-            transform.position = new Vector3(pos.x - localCursor.x, pos.y - localCursor.y, pos.z);
+            joyStick.transform.position = new Vector3(pos.x - (localCursor.x + X), pos.y - (localCursor.y + Y), pos.z);
         if (currentPosition == "left")
-            transform.position = new Vector3(pos.x - localCursor.y, pos.y + localCursor.x, pos.z);
+            joyStick.transform.position = new Vector3(pos.x - (localCursor.y + Y), pos.y + (localCursor.x + X), pos.z);
         if (currentPosition == "right")
-            transform.position = new Vector3(pos.x + localCursor.y, pos.y - localCursor.x, pos.z);
+            joyStick.transform.position = new Vector3(pos.x + (localCursor.y + Y), pos.y - (localCursor.x + X), pos.z);
 
     }
 
@@ -202,35 +205,35 @@ public class VirtualJoyStickDragController : MonoBehaviour, IDragHandler, IPoint
         }
         if(currentPosition == "top")
         {
-            if ((posX - 125) < 0)
-                posX += 125 - posX;
+            if ((posX - 150) < 0)
+                posX += 150 - posX;
             else if ((posX + 125) > Screen.width)
-                posX = Screen.width - (240 - (Screen.width - posX));
+                posX = Screen.width - (280 - (Screen.width - posX));
             joyStick.rectTransform.anchoredPosition = new Vector2(posX + 50, posY);
         }
         if (currentPosition == "bottom")
         {
-            if((posX - 125) < 0)
-                posX += 125 - posX;
-            else if((posX + 125) > Screen.width)
-                posX = Screen.width - (240 - (Screen.width - posX));
+            if((posX - 150) < 0)
+                posX += 150 - posX;
+            else if((posX + 150) > Screen.width)
+                posX = Screen.width - (280 - (Screen.width - posX));
             joyStick.rectTransform.anchoredPosition = new Vector2(posX - 50, posY);
 
         }
         if (currentPosition == "left")
         {
-            if ((posY - 125) < 0)
-                posY += 125 - posY;
-            else if ((posY + 125) > Screen.height)
-                posY = Screen.height - (240 - (Screen.height - posY));
+            if ((posY - 150) < 0)
+                posY += 150 - posY;
+            else if ((posY + 150) > Screen.height)
+                posY = Screen.height - (280 - (Screen.height - posY));
             joyStick.rectTransform.anchoredPosition = new Vector2(posX, posY + 50);
         }
         if (currentPosition == "right")
         {
-            if ((posY - 125) < 0)
-                posY += 125 - posY;
-            else if ((posY + 125) > Screen.height)
-                posY = Screen.height - (240 - (Screen.height - posY));
+            if ((posY - 150) < 0)
+                posY += 150 - posY;
+            else if ((posY + 150) > Screen.height)
+                posY = Screen.height - (280 - (Screen.height - posY));
             joyStick.rectTransform.anchoredPosition = new Vector2(posX, posY - 50);
         }
     }
