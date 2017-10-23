@@ -12,9 +12,9 @@ public class Flip : MonoBehaviour, IPointerUpHandler {
         FlipObject();
     }
 
-    private void FlipObject()
+    public void FlipObject()
     {
-        currTrans.Rotate(currTrans.rotation.x + 180, 0, 0);
+        currTrans.Rotate(currTrans.rotation.x + 180.0f, 0, 0);
     }
 
 }

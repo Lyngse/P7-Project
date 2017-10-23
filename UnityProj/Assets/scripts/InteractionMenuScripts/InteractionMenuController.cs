@@ -23,8 +23,10 @@ public class InteractionMenuController : MonoBehaviour {
                     closeButton.localPosition = offset;
                     currentMenu.canvas.GetComponent<Canvas>().enabled = true;
                     currentMenu.isOpen = true;
-                    Flip flipper = currentMenu.canvas.transform.GetChild(0).GetChild(0).GetComponent<Flip>();
+                    Flip flipper = currentMenu.canvas.transform.GetChild(0).GetChild(1).GetComponent<Flip>();
+                    Rotate rotater = currentMenu.canvas.transform.GetChild(0).GetChild(0).GetComponent<Rotate>();
                     flipper.currTrans = currTrans;
+                    rotater.currTrans = currTrans;
                 }
                 else
                 {

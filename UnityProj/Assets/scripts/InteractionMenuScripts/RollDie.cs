@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TurnCube : MonoBehaviour {
+public class RollDie : MonoBehaviour {
     private Vector3 screenPoint;
     private Vector3 offset;
     private Rigidbody thisBody;
