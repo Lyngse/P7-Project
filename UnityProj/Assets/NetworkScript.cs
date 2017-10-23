@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
 using UnityEngine.Networking.Types;
+using System.Collections.Generic;
+using System;
 
 public class NetworkScript : MonoBehaviour {
 
@@ -14,9 +16,10 @@ public class NetworkScript : MonoBehaviour {
   int hostPort = 11000;
   bool isServer;
 
-  enum colors { red, green, blue, white, black, yellow, orange, purple };
+  enum messageType { colors };
+  enum PlayerColor { red, green, blue, white, black, yellow, orange, purple };
 
-  int[] connectionColors = { 0, 0, 0, 0, 0, 0, 0, 0 };
+  Connections connections;
 
 	// Use this for initialization
 	void Start () {
@@ -47,9 +50,12 @@ public class NetworkScript : MonoBehaviour {
     {
       case NetworkEventType.ConnectEvent:
         Debug.Log("server connectionEvent: " + status.connectionId);
-        send(, status.connectionId);
+
+        
         IpEndPoint ipEndPoint = GetIpEndPoint(status.connectionId);
         Debug.Log("Ip: " + ipEndPoint.address + ":" + ipEndPoint.port);
+
+        send(new UdpMessage(messageType.colors, JsonUtility.ToJson(connections)), status.connectionId);
         break;
       case NetworkEventType.DataEvent:
         Debug.Log("server dataEvent: " + status.connectionId + " message: " + status.message);
@@ -72,6 +78,7 @@ public class NetworkScript : MonoBehaviour {
         break;
       case NetworkEventType.DataEvent:
         Debug.Log("client dataEvent: " + status.connectionId + " message: " + status.message);
+
         break;
       case NetworkEventType.DisconnectEvent:
         Debug.Log("client disconnectionEvent: " + status.connectionId);
@@ -82,17 +89,19 @@ public class NetworkScript : MonoBehaviour {
     }
   }
 
-  void send(string message, int connectionId)
+  void receiveMessage(byte[] message)
   {
-    byte[] bytes = Encoding.ASCII.GetBytes(message);
-    byte error;
-    NetworkTransport.Send(hostId, connectionId, 0, bytes, bytes.Length, out error);
+    string json = Encoding.ASCII.GetString(message);
+    UdpMessage udpMessage = JsonUtility.FromJson<UdpMessage>(json);
+
   }
 
-  void send(object obj, int connectionId)
+  void send(UdpMessage udpMessage, int connectionId)
   {
-    var json = JsonUtility.ToJson(obj);
-    send(json, connectionId);
+    var json = JsonUtility.ToJson(udpMessage);
+    byte[] bytes = Encoding.ASCII.GetBytes(json);
+    byte error;
+    NetworkTransport.Send(hostId, connectionId, reliableChannelId, bytes, bytes.Length, out error);
   }
 
   void onHostButtonClick()
@@ -116,6 +125,7 @@ public class NetworkScript : MonoBehaviour {
   
   void startNetwork()
   {
+    connections = new Connections();
     NetworkTransport.Init();
     ConnectionConfig config = getConfig();
     HostTopology topology = new HostTopology(config, 8);
@@ -187,6 +197,46 @@ public class NetworkScript : MonoBehaviour {
     {
       address = add;
       port = p;
+    }
+  }
+
+  class UdpMessage
+  {
+    public messageType messageType;
+    public string json;
+
+    public UdpMessage(messageType messageType, string json)
+    {
+      this.messageType = messageType;
+      this.json = json;
+      //json = JsonUtility.ToJson(payload);
+      //Debug.Log(json);
+    }
+  }
+
+
+  class Connections
+  {
+    public int[] connectionsArray;
+
+    public Connections()
+    {
+      Array values = Enum.GetValues(typeof(PlayerColor));
+      connectionsArray = new int[values.Length];
+      for (int i = 0; i < values.Length; i++)
+      {
+        connectionsArray[i] = 0;
+      }
+    }
+
+    public void addConnection(int connectionId, PlayerColor color)
+    {
+      connectionsArray[(int)color] = connectionId;
+    }
+
+    public int getConnection(PlayerColor color)
+    {
+      return connectionsArray[(int)color];
     }
 
   }
