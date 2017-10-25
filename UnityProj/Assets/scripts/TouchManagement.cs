@@ -39,7 +39,7 @@ public class TouchManagement : MonoBehaviour {
 
                         if (!menus.Exists(x => x.hitTransform == hit.transform) && hit.transform.tag == "Dragable")
                         {
-                            Canvas menu = GameObject.Instantiate<Canvas>(GameObject.Find("InteractionMenu").GetComponent<Canvas>());
+                            Canvas menu = Instantiate(GameObject.Find("InteractionMenu").GetComponent<Canvas>());
                             MenuInfo thisMenu = new MenuInfo(menu, hit.transform, menu.enabled);
 
                             menus.Add(thisMenu);
