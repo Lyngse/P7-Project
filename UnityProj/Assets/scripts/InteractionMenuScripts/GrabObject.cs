@@ -19,7 +19,7 @@ public class GrabObject
 
 
 
-        if (target.hitTransform.tag == "Dragable" && target.isMoving)
+        if (target.hitTransform.tag != "Undragable" && target.isMoving)
         {
             target.hitTransform.GetComponent<Rigidbody>().useGravity = false;
             target.hitTransform.transform.position = dragplaneRay.GetPoint(enter);
@@ -33,7 +33,7 @@ public class GrabObject
         float enter = 0;
         dragPlane.Raycast(dragplaneRay, out enter);
 
-        if (target.hitTransform.tag == "Dragable" && target.isMoving)
+        if (target.hitTransform.tag != "Undragable" && target.isMoving)
         {
             target.hitTransform.GetComponent<Rigidbody>().useGravity = false;
             target.hitTransform.transform.position = dragplaneRay.GetPoint(enter);

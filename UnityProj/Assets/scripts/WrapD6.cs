@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UVTest : MonoBehaviour {
+public class WrapD6 : MonoBehaviour {
 
     void Start()
     {

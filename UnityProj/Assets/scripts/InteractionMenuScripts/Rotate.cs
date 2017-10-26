@@ -15,6 +15,9 @@ public class Rotate : MonoBehaviour, IPointerDownHandler
 
     private void RotateObject()
     {
-        currTrans.Rotate(0, currTrans.rotation.y + 90, 0);
+        if (currTrans.tag == "Card")
+            currTrans.Rotate(0, 0, currTrans.rotation.z + 90);
+        else
+            currTrans.Rotate(0, currTrans.rotation.y + 90, 0);
     }
 }

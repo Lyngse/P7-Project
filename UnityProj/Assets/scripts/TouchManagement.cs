@@ -37,7 +37,7 @@ public class TouchManagement : MonoBehaviour {
                         TouchInfo touchinfo = new TouchInfo(t.fingerId, hit.transform, 0.0f);
                         infos.Add(touchinfo);
 
-                        if (!menus.Exists(x => x.hitTransform == hit.transform) && hit.transform.tag == "Dragable")
+                        if (!menus.Exists(x => x.hitTransform == hit.transform) && hit.transform.tag != "Undragable")
                         {
                             Canvas menu = Instantiate(GameObject.Find("InteractionMenu").GetComponent<Canvas>());
                             MenuInfo thisMenu = new MenuInfo(menu, hit.transform, menu.enabled);
@@ -71,7 +71,7 @@ public class TouchManagement : MonoBehaviour {
                         {
                             if (target.isMoving)
                             {
-                                if (target.hitTransform.tag == "Dragable")
+                                if (target.hitTransform.tag != "Undragable")
                                     target.hitTransform.GetComponent<Rigidbody>().useGravity = true;
                             }
                             else if (!target.isMoving)
