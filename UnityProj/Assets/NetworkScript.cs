@@ -38,6 +38,7 @@ abstract class NetworkScript : MonoBehaviour
 
     public void startNetwork()
     {
+        Application.runInBackground = true;
         webSocket.ConnectAsync();
         webSocket.OnOpen += socketOnOpen;
         webSocket.OnMessage += socketOnMessage;
