@@ -132,11 +132,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 264813361}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 625a546627e209841aaac931db37d6d0, type: 3}
+  m_Script: {fileID: 11500000, guid: b849cec8b8abce34cbf20c1835608065, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hostButton: {fileID: 761443027}
-  connectButton: {fileID: 400943022}
+  sendButton: {fileID: 0}
 --- !u!4 &264813363
 Transform:
   m_ObjectHideFlags: 0
@@ -759,7 +758,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Host
+  m_Text: 'Host
+
+'
 --- !u!222 &1750767527
 CanvasRenderer:
   m_ObjectHideFlags: 0

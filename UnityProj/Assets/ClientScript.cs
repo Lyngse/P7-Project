@@ -1,79 +1,39 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
+using System.Linq;
+using System.Text;
+using UnityEngine.UI;
 using WebSocketSharp;
 
+class ClientScript : NetworkScript
+{
+    public Button clientButton;
+    public InputField codeInput;
 
-public class ClientScript : MonoBehaviour {
-
-    WebSocket webSocket = new WebSocket("ws://localhost:5000");
-    List<string> chatClients = new List<string>();
-    private bool hasSent = false;
-
-    // Use this for initialization
-    void Start ()
+    private void Start()
     {
-        StartServer();
-        webSocket.ConnectAsync();
-
-        webSocket.OnMessage += (sender, e) =>
-        {
-            Debug.Log("Node says: " + e.Data);
-            chatClients.Add(e.Data);
-        };
-
-      
-
-    }
-	
-	// Update is called once per frame
-	void Update () {
-	    if (webSocket.ReadyState == WebSocketState.Open && hasSent == false && chatClients.Count > 1)
-	    {
-	        messageObject testMessage = new messageObject("forward", chatClients[1], "Søren sucks");
-	        var jsonMessage = JsonUtility.ToJson(testMessage);
-	        //webSocket.Send(jsonMessage);
-	        hasSent = true;
-	    }
-
+        clientButton.onClick.AddListener(clientClick);
     }
 
-    private void StartServer()
+    void clientClick()
     {
-        var process = new System.Diagnostics.Process();
-        process.StartInfo.FileName = @".\..\webSocketServer\startserver.bat";
-        process.StartInfo.WorkingDirectory = @".\..\webSocketServer";
-        process.Start();
-
+        startNetwork();
     }
 
-
-    public void recieveMessage(object sender, MessageEventArgs e)
+    protected override void onMessage(string data)
     {
-        Debug.Log(e.Data);
-
-        
+        throw new NotImplementedException();
     }
 
-    public class messageObject
+    protected override void onOpen()
     {
-        // Possibly make the type an enum
-        public string type;
-        public string reciever;
-        public string message;
-
-        public messageObject(string thisType, string thisReciever, string thisMessage = "")
-        {
-            type = thisType;
-            reciever = thisReciever;
-            message = thisMessage;
-        }
+        string hostCode = codeInput.text;
+        var message = createMessage("client_connection", hostCode);
+        webSocket.Send(message.ToString());
     }
 
-
-
-
-
-
-
+    void sendToHost(IJsonable message)
+    {
+        throw new NotImplementedException();
+    }
 }
