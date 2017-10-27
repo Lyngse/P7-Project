@@ -24,41 +24,38 @@ class HostScript : NetworkScript
 
     protected override void onOpen()
     {
-        var message = createMessage("host_connection", "");
-        string json = message.ToString();
-        webSocket.Send(json);
+        var options = new MessageOptions("host_connection");
+        var message = new WebSocketMessage(options);
+        var json = message.toJson();
+        webSocket.Send(json.ToString());
     }
 
     protected override void onMessage(string data)
     {
         Debug.Log(data);
         var message = JSON.Parse(data);
-        var type = message["type"].Value;
-        switch (type)
+        var options = new MessageOptions(message["options"]);
+        switch (options.type)
         {
             case "code":
-                code = message["payload"].Value;
+                code = options.code;
                 hostButton.GetComponentInChildren<Text>().text = code;
                 break;
-            case "player_joined":
-                int colorNumber = message["payload"].AsInt;
-                clientColors.Add((Utility.ClientColor)colorNumber);
-                sendToClient(clientColors[0], new StringMessage("hello from host"));
+            case "client_joined":
+                clientColors.Add(options.color);
+                sendToClient(options.color, new StringPackage(options.color.ToString()), "string");
                 break;
             default:
                 break;
         }
     }
 
-    void sendToClient(Utility.ClientColor clientColor, IJsonable message)
+    void sendToClient(Utility.ClientColor clientColor, IJsonable package, string packageType)
     {
-        var payload = new toClientMessage();
-        payload.code = code;
-        payload.clientColor = clientColor;
-        payload.message = message;
-        var m = createMessage("host_to_client", payload);
-        string json = m.ToString();
-        webSocket.Send(json);
+        var options = new MessageOptions("host_to_client", code, clientColor, packageType);
+        var wbm = new WebSocketMessage(options, package);
+        var json = wbm.toJson();
+        webSocket.Send(json.ToString());
     }
 
     void sendToAll(IJsonable message)

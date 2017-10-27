@@ -2,7 +2,8 @@
 
 interface IJsonable
 {
-    void fromJson(string jsonString);
+
+    void fromJson(JSONNode json);
 
     JSONNode toJson();
 }

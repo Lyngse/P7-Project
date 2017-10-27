@@ -53,21 +53,4 @@ abstract class NetworkScript : MonoBehaviour
     {
         bufferQueue.Enqueue(Tuple.New(Utility.websocketEvent.Message, e.Data));
     }
-
-    protected JSONObject createMessage(string type, IJsonable payload)
-    {
-        var json = new JSONObject();
-        json.Add("type", new JSONString(type));
-        var payloadJson = payload.toJson();
-        json.Add("payload", payloadJson);
-        return json;
-    }
-
-    protected JSONObject createMessage(string type, string payload)
-    {
-        var json = new JSONObject();
-        json.Add("type", new JSONString(type));
-        json.Add("payload", new JSONString(payload));
-        return json;
-    }
 }
