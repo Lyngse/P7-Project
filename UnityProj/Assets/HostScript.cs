@@ -9,18 +9,7 @@ using WebSocketSharp;
 
 class HostScript : NetworkScript
 {
-    public Button hostButton;
     List<Utility.ClientColor> clientColors = new List<Utility.ClientColor>();
-
-    private void Start()
-    {
-        hostButton.onClick.AddListener(hostClick);
-    }
-
-    void hostClick()
-    {
-        startNetwork();
-    }
 
     protected override void onOpen()
     {
@@ -39,7 +28,6 @@ class HostScript : NetworkScript
         {
             case "code":
                 code = options.code;
-                hostButton.GetComponentInChildren<Text>().text = code;
                 break;
             case "client_joined":
                 clientColors.Add(options.color);

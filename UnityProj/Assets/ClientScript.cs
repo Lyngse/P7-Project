@@ -9,27 +9,27 @@ using WebSocketSharp;
 
 class ClientScript : NetworkScript
 {
-    public Button clientButton;
+    public Button connectButton;
     public InputField codeInput;
     Utility.ClientColor myColor = Utility.ClientColor.none;
 
     private void Start()
     {
-        clientButton.onClick.AddListener(clientClick);
+        connectButton.onClick.AddListener(clientConnect);
     }
 
-    void clientClick()
-    {
-        startNetwork();
-    }
-
-    protected override void onOpen()
+    void clientConnect()
     {
         code = codeInput.text;
         var options = new MessageOptions("client_connection", code);
         var message = new WebSocketMessage(options);
         var json = message.toJson();
         webSocket.Send(json.ToString());
+    }
+
+    protected override void onOpen()
+    {
+        connectButton.interactable = true;
     }
 
     protected override void onMessage(string data)

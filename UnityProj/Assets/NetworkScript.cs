@@ -13,6 +13,14 @@ abstract class NetworkScript : MonoBehaviour
     public Queue<Tuple<Utility.websocketEvent, string>> bufferQueue = new Queue<Tuple<Utility.websocketEvent, string>>();
     bool started = false;
 
+    private void Start()
+    {
+        Application.runInBackground = true;
+        webSocket.ConnectAsync();
+        webSocket.OnOpen += socketOnOpen;
+        webSocket.OnMessage += socketOnMessage;
+    }
+
     private void Update()
     {
         if (bufferQueue.Count > 0)
@@ -35,15 +43,6 @@ abstract class NetworkScript : MonoBehaviour
     protected abstract void onOpen();
 
     protected abstract void onMessage(string data);
-
-    public void startNetwork()
-    {
-        Application.runInBackground = true;
-        webSocket.ConnectAsync();
-        webSocket.OnOpen += socketOnOpen;
-        webSocket.OnMessage += socketOnMessage;
-        
-    }
 
     void socketOnOpen(object sender, EventArgs e)
     {
