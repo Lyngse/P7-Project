@@ -13,7 +13,7 @@ abstract class NetworkScript : MonoBehaviour
     public Queue<Tuple<Utility.websocketEvent, string>> bufferQueue = new Queue<Tuple<Utility.websocketEvent, string>>();
     bool started = false;
 
-    private void Start()
+    protected virtual void Start()
     {
         Application.runInBackground = true;
         webSocket.ConnectAsync();

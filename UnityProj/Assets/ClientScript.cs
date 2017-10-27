@@ -13,8 +13,9 @@ class ClientScript : NetworkScript
     public InputField codeInput;
     Utility.ClientColor myColor = Utility.ClientColor.none;
 
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
         connectButton.onClick.AddListener(clientConnect);
     }
 
