@@ -4,7 +4,7 @@ using UnityEngine;
 using Assets.scripts.Classes;
 using UnityEngine.EventSystems;
 
-public class GrabObject
+public class GrabObject : MonoBehaviour
 {
     private Vector3 screenPoint;
     private Vector3 offset;
