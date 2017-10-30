@@ -12,8 +12,12 @@ public class Flip : MonoBehaviour, IPointerUpHandler {
         FlipObject();
     }
 
-    public void FlipObject()
+    private void FlipObject()
     {
+        if (currTrans.tag == "Token" || currTrans.tag == "Card")
+            currTrans.position = new Vector3(currTrans.position.x, 0.5f, currTrans.position.z);
+        else if (currTrans.tag == "Deck")
+            currTrans.position = new Vector3(currTrans.position.x, 1.5f, currTrans.position.z);
         currTrans.Rotate(currTrans.rotation.x + 180.0f, 0, 0);
     }
 

@@ -25,8 +25,11 @@ public class InteractionMenuController : MonoBehaviour {
                     currentMenu.isOpen = true;
                     Flip flipper = currentMenu.canvas.transform.GetChild(0).GetChild(1).GetComponent<Flip>();
                     Rotate rotater = currentMenu.canvas.transform.GetChild(0).GetChild(0).GetComponent<Rotate>();
+                    Delete deleter = currentMenu.canvas.transform.GetChild(0).GetChild(5).GetComponent<Delete>();
                     flipper.currTrans = currTrans;
                     rotater.currTrans = currTrans;
+                    deleter.currTrans = currTrans;
+                    deleter.menu = currentMenu.canvas;
 
                     if (currTrans.tag == "Deck")
                     {
@@ -44,7 +47,6 @@ public class InteractionMenuController : MonoBehaviour {
                         RollDie rollDie = currentMenu.canvas.transform.GetChild(0).GetChild(3).GetComponent<RollDie>();
                         rollDie.dieTransform = currTrans;
                     }
-                   
                 }
                 else
                 {

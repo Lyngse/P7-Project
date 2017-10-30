@@ -38,25 +38,25 @@ public class DeckController : MonoBehaviour {
             }
         }
 
-        Vector3[] vertices =
-        {
-            new Vector3(-0.5f, 0, -0.5f),
-            new Vector3(0.5f, 0, -0.5f),
-            new Vector3(-0.5f, 0, 0.5f),
-            new Vector3(0.5f, 0, 0.5f),
-        };
-        Vector2[] uvs =
-        {
-            new Vector2(0, 0),
-            new Vector2(1f, 0),
-            new Vector2(0, 1f),
-            new Vector2(1f, 1f),
-        };
-        int[] triangles =
-        {
-            0, 2, 1,
-			1, 2, 3,
-        };
+   //     Vector3[] vertices =
+   //     {
+   //         new Vector3(-0.5f, 0, -0.5f),
+   //         new Vector3(0.5f, 0, -0.5f),
+   //         new Vector3(-0.5f, 0, 0.5f),
+   //         new Vector3(0.5f, 0, 0.5f),
+   //     };
+   //     Vector2[] uvs =
+   //     {
+   //         new Vector2(0, 0),
+   //         new Vector2(1f, 0),
+   //         new Vector2(0, 1f),
+   //         new Vector2(1f, 1f),
+   //     };
+   //     int[] triangles =
+   //     {
+   //         0, 2, 1,
+			//1, 2, 3,
+   //     };
 
         foreach (Card card in _cards)
         {
@@ -64,20 +64,20 @@ public class DeckController : MonoBehaviour {
             card.transform.GetChild(1).GetComponent<MeshRenderer>().material.mainTexture = card.backImg;
             //card.mr.material.mainTexture = card.frontImg;
             //Mesh mesh = card.transform.GetComponent<MeshFilter>().mesh;
-            Mesh meshFront = card.transform.GetChild(0).GetComponent<MeshFilter>().mesh;
-            Mesh meshBack = card.transform.GetChild(1).GetComponent<MeshFilter>().mesh;
+            //Mesh meshFront = card.transform.GetChild(0).GetComponent<MeshFilter>().mesh;
+            //Mesh meshBack = card.transform.GetChild(1).GetComponent<MeshFilter>().mesh;
 
-            meshFront.Clear();
-            meshFront.vertices = vertices;
-            meshFront.triangles = triangles;
-            meshFront.uv = uvs;
-            meshFront.RecalculateNormals();
+            //meshFront.Clear();
+            //meshFront.vertices = vertices;
+            //meshFront.triangles = triangles;
+            //meshFront.uv = uvs;
+            //meshFront.RecalculateNormals();
 
-            meshBack.Clear();
-            meshBack.vertices = vertices;
-            meshBack.triangles = triangles;
-            meshBack.uv = uvs;
-            meshBack.RecalculateNormals();
+            //meshBack.Clear();
+            //meshBack.vertices = vertices;
+            //meshBack.triangles = triangles;
+            //meshBack.uv = uvs;
+            //meshBack.RecalculateNormals();
         }
         _deck = new Deck(_cards);
     }
@@ -165,7 +165,8 @@ public class DeckController : MonoBehaviour {
         if (_deck.isFaceDown)
         {
             //Send the first card of the list to the table next to the deck
-            _cards[0].transform.Rotate(new Vector3 (180, 0, 0));
+            _cards[0].transform.Rotate(new Vector3 (-180, 0, 180));
+            _cards[0].transform.position = new Vector3((transform.position.x + 7), 5, transform.position.z);
             _cards[0].transform.gameObject.SetActive(true);
             _dealtCards.Add(_cards[0]);
             _cards.Remove(_cards[0]);
@@ -173,6 +174,7 @@ public class DeckController : MonoBehaviour {
         else
         {
             //Send the last card of the list to the table next tot the deck
+            _cards[_cards.Count - 1].transform.position = new Vector3((transform.position.x + 7), 5, transform.position.z);
             _cards[_cards.Count - 1].transform.gameObject.SetActive(true);
             _dealtCards.Add(_cards[_cards.Count - 1]);
             _cards.Remove(_cards[_cards.Count - 1]);

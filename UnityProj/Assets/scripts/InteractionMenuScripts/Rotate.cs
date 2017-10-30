@@ -15,7 +15,7 @@ public class Rotate : MonoBehaviour, IPointerDownHandler
 
     private void RotateObject()
     {
-        if (currTrans.tag == "Card")
+        if (currTrans.tag == "Card" || currTrans.tag == "Token")
             currTrans.Rotate(0, 0, currTrans.rotation.z + 90);
         else
             currTrans.Rotate(0, currTrans.rotation.y + 90, 0);

@@ -21,25 +21,4 @@ public class InteractionTests {
 		yield return null;
 	}
 
-    [UnityTest]
-    public IEnumerator FlipTest()
-    {
-        var obj = new GameObject().AddComponent<Flip>();
-        obj.currTrans = obj.transform;
-
-        yield return null;
-
-        obj.FlipObject();
-        Assert.AreEqual(180, obj.transform.rotation.x);
-        obj.FlipObject();
-        Assert.AreEqual(0, obj.transform.rotation.x);
-    }
-
-    [UnityTest]
-    public IEnumerator RotateTest()
-    {
-
-
-        yield return null;
-    }
 }
