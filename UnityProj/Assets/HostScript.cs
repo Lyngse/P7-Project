@@ -9,6 +9,8 @@ using WebSocketSharp;
 
 class HostScript : NetworkScript
 {
+
+    public InputField codeField;
     List<Utility.ClientColor> clientColors = new List<Utility.ClientColor>();
 
     protected override void onOpen()
@@ -28,6 +30,7 @@ class HostScript : NetworkScript
         {
             case "code":
                 code = options.code;
+                codeField.text = code;
                 break;
             case "client_joined":
                 clientColors.Add(options.color);
