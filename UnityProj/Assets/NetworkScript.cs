@@ -11,7 +11,6 @@ abstract class NetworkScript : MonoBehaviour
     protected WebSocket webSocket = new WebSocket("ws://p7-webserver.herokuapp.com");
     protected string code = "";
     public Queue<Tuple<Utility.websocketEvent, string>> bufferQueue = new Queue<Tuple<Utility.websocketEvent, string>>();
-    bool started = false;
 
     protected virtual void Start()
     {
