@@ -14,7 +14,7 @@ public class InteractionMenuController : MonoBehaviour {
         {
             MenuInfo currentMenu = menus.Find(x => x.hitTransform == hit.transform);
             currTrans = hit.transform;
-            if (!EventSystem.current.IsPointerOverGameObject(touch.fingerId))
+            if (EventSystem.current.IsPointerOverGameObject(touch.fingerId))
             {
                 if (!currentMenu.isOpen)
                 {
