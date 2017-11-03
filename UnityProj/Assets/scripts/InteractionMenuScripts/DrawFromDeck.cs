@@ -8,7 +8,7 @@ public class DrawFromDeck : MonoBehaviour, IPointerUpHandler
     public Transform deckTransform;
     public virtual void OnPointerUp(PointerEventData ped)
     {
-        deckTransform.GetComponent<DeckController>().DrawToTable();
+        deckTransform.GetComponent<Deck>().DrawToTable();
     }
 
 }

@@ -14,7 +14,7 @@ public class InteractionMenuController : MonoBehaviour {
         {
             MenuInfo currentMenu = menus.Find(x => x.hitTransform == hit.transform);
             currTrans = hit.transform;
-            if (EventSystem.current.IsPointerOverGameObject(touch.fingerId))
+            if (!EventSystem.current.IsPointerOverGameObject(touch.fingerId))
             {
                 if (!currentMenu.isOpen)
                 {
@@ -25,7 +25,7 @@ public class InteractionMenuController : MonoBehaviour {
                     currentMenu.isOpen = true;
                     Flip flipper = currentMenu.canvas.transform.GetChild(0).GetChild(1).GetComponent<Flip>();
                     Rotate rotater = currentMenu.canvas.transform.GetChild(0).GetChild(0).GetComponent<Rotate>();
-                    Delete deleter = currentMenu.canvas.transform.GetChild(0).GetChild(5).GetComponent<Delete>();
+                    Delete deleter = currentMenu.canvas.transform.GetChild(0).GetChild(7).GetChild(1).GetComponent<Delete>();
                     flipper.currTrans = currTrans;
                     rotater.currTrans = currTrans;
                     deleter.currTrans = currTrans;
