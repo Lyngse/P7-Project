@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using UnityEngine.EventSystems;
-//using UnityEditor;
 
 
 public class Delete : MonoBehaviour, IPointerUpHandler
@@ -19,11 +18,8 @@ public class Delete : MonoBehaviour, IPointerUpHandler
 
     private void DeleteObject()
     {
-        //if(EditorUtility.DisplayDialog("Delete", "Are you sure you want to delete this" + currTrans.tag, "Yes", "No"))
-        //{
-            Destroy(currTrans.gameObject);
-            Destroy(menu.transform.gameObject);
-        //}
+        Destroy(currTrans.gameObject);
+        Destroy(menu.transform.gameObject);
     }
 }
 

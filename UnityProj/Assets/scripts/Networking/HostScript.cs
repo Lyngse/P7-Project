@@ -41,7 +41,7 @@ class HostScript : NetworkScript
         }
     }
 
-    void sendToClient(Utility.ClientColor clientColor, IJsonable package, string packageType)
+    public void sendToClient(Utility.ClientColor clientColor, IJsonable package, string packageType)
     {
         var options = new MessageOptions("host_to_client", code, clientColor, packageType);
         var wbm = new WebSocketMessage(options, package);
@@ -49,7 +49,7 @@ class HostScript : NetworkScript
         webSocket.Send(json.ToString());
     }
 
-    void sendToAll(IJsonable message)
+    public void sendToAll(IJsonable message)
     {
         throw new NotImplementedException();
     }

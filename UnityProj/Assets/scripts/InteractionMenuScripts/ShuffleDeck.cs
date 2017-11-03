@@ -8,7 +8,7 @@ public class ShuffleDeck : MonoBehaviour, IPointerUpHandler
     public Transform deckTransform;
     public virtual void OnPointerUp(PointerEventData ped)
     {
-        deckTransform.GetComponent<DeckController>().ShuffleDeck();
+        deckTransform.GetComponent<Deck>().ShuffleDeck();
     }
 
 }

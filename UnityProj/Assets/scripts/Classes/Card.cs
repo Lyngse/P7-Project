@@ -2,22 +2,50 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using SimpleJSON;
 using UnityEngine;
+using Assets.scripts;
 
 namespace Assets.scripts.Classes
 {
-    public class Card
+    public class Card : MonoBehaviour, IJsonable
     {
-        //Needs to store some information about face and back side of the card in two different variables, not sure what to store them as.
-        //public string imgUrl;
         public Texture2D frontImg;
         public Texture2D backImg;
-        public bool isFaceDown = true;
-        public MeshRenderer mr;
-        public Transform transform;
+        public string frontImgUrl;
+        public string backImgUrl;
+        public bool isFaceDown;
 
-        public Card()
+        public Card(string front, string back)
         {
+            this.frontImgUrl = front;
+            this.backImgUrl = back;
+            this.isFaceDown = true;
+        }
+
+        public void fromJson(JSONNode json)
+        {
+            throw new NotImplementedException();
+        }
+        
+        public JSONNode toJson()
+        {
+            JSONNode json = new JSONObject();
+            json.Add("FrontImage", new JSONString(frontImgUrl));
+            json.Add("BackImage", new JSONString(backImgUrl));
+
+            return json;
+        }
+
+        public void DealToPlayer(Utility.ClientColor color)
+        {
+            HostScript currentHost = GameObject.Find("NetworkHost").GetComponent<HostScript>();
+            currentHost.sendToClient(color, this.GetComponent<Card>(), "Card");
+        }
+
+        public void PlaceCardOnTopOfDeck(Card card)
+        {
+
         }
     }
 }
