@@ -13,6 +13,7 @@ class ClientScript : NetworkScript
     public Canvas gameCanvas;
     Button connectButton;
     InputField codeInput;
+    Text colorText;
     Utility.ClientColor myColor = Utility.ClientColor.none;
 
     protected override void Start()
@@ -21,6 +22,7 @@ class ClientScript : NetworkScript
         codeInput = connectCanvas.GetComponentInChildren<InputField>();
         connectButton = connectCanvas.GetComponentInChildren<Button>();
         connectButton.onClick.AddListener(clientConnect);
+        colorText = gameCanvas.GetComponentsInChildren<Text>().First(text => text.name == "colorText");
     }
 
     void clientConnect()
@@ -49,6 +51,10 @@ class ClientScript : NetworkScript
                 break;
             case "color_change":
                 myColor = options.color;
+                connectCanvas.gameObject.SetActive(false);
+                gameCanvas.gameObject.SetActive(true);
+                colorText.text = myColor.ToString();
+                colorText.color = Utility.colors[(int)myColor];
                 break;
             default:
                 break;
