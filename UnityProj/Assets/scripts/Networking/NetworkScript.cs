@@ -47,6 +47,11 @@ abstract class NetworkScript : MonoBehaviour
         }
     }
 
+    private void OnApplicationQuit()
+    {
+        webSocket.Close();
+    }
+
     private void Ping(object source, ElapsedEventArgs e)
     {
         webSocket.Ping();
