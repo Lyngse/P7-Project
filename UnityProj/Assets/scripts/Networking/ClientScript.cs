@@ -9,13 +9,17 @@ using WebSocketSharp;
 
 class ClientScript : NetworkScript
 {
-    public Button connectButton;
-    public InputField codeInput;
+    public Canvas connectCanvas;
+    public Canvas gameCanvas;
+    Button connectButton;
+    InputField codeInput;
     Utility.ClientColor myColor = Utility.ClientColor.none;
 
     protected override void Start()
     {
         base.Start();
+        codeInput = connectCanvas.GetComponentInChildren<InputField>();
+        connectButton = connectCanvas.GetComponentInChildren<Button>();
         connectButton.onClick.AddListener(clientConnect);
     }
 
