@@ -19,6 +19,7 @@ abstract class NetworkScript : MonoBehaviour
         webSocket.ConnectAsync();
         webSocket.OnOpen += socketOnOpen;
         webSocket.OnMessage += socketOnMessage;
+        webSocket.OnClose += socketOnClose;
         Timer timer = new Timer(30000);
         timer.Elapsed += new ElapsedEventHandler(Ping);
         timer.Enabled = true;
@@ -34,6 +35,9 @@ abstract class NetworkScript : MonoBehaviour
                 case Utility.websocketEvent.Open:
                     onOpen();
                     break;
+                case Utility.websocketEvent.Close:
+                    onClose();
+                    break;
                 case Utility.websocketEvent.Message:
                     onMessage(websocketEvent.Second);
                     break;
@@ -48,6 +52,8 @@ abstract class NetworkScript : MonoBehaviour
         webSocket.Ping();
     }
 
+    protected abstract void onClose();
+
     protected abstract void onOpen();
 
     protected abstract void onMessage(string data);
@@ -56,6 +62,12 @@ abstract class NetworkScript : MonoBehaviour
     {
         bufferQueue.Enqueue(Tuple.New(Utility.websocketEvent.Open, ""));
     }
+
+    void socketOnClose(object sender, CloseEventArgs e)
+    {
+        bufferQueue.Enqueue(Tuple.New(Utility.websocketEvent.Close, ""));
+    }
+
     void socketOnMessage(object sender, MessageEventArgs e)
     {
         bufferQueue.Enqueue(Tuple.New(Utility.websocketEvent.Message, e.Data));
