@@ -11,17 +11,17 @@ public class Card : MonoBehaviour, IJsonable
 {
     string frontImgUrl;
     string backImgUrl;
-    int id;
+    int index;
     int deckId;
     bool isFaceDown;
     WWWController wwwController;
 
-    public void Instantiate(int deckId, int id, string frontImgUrl, string backImgUrl, bool isFaceDown = true)
+    public void Instantiate(int deckId, int index, string frontImgUrl, string backImgUrl, bool isFaceDown = true)
     {
         this.frontImgUrl = frontImgUrl;
         this.backImgUrl = backImgUrl;
         this.isFaceDown = isFaceDown;
-        this.id = id;
+        this.index = index;
         this.deckId = deckId;
         init();
     }
@@ -47,7 +47,7 @@ public class Card : MonoBehaviour, IJsonable
 
             var cardHeight = sourceFrontTex.height / 7f;
             var cardWidth = sourceFrontTex.width / 10f;
-            var frontTex = CropImageToCard(sourceFrontTex, ((id / 7) * cardWidth), ((id % 7) * cardHeight), cardWidth, cardHeight);
+            var frontTex = CropImageToCard(sourceFrontTex, ((index / 7) * cardWidth), ((index % 7) * cardHeight), cardWidth, cardHeight);
 
             transform.GetChild(0).GetComponent<MeshRenderer>().material.mainTexture = frontTex;
             transform.GetChild(1).GetComponent<MeshRenderer>().material.mainTexture = backTex;
@@ -64,7 +64,7 @@ public class Card : MonoBehaviour, IJsonable
         frontImgUrl = json["FrontImage"].Value;
         backImgUrl = json["BackImage"].Value;
         isFaceDown = json["isFaceDown"].AsBool;
-        id = json["id"].AsInt;
+        index = json["index"].AsInt;
         deckId = json["deckId"].AsInt;
     }
 
@@ -74,6 +74,8 @@ public class Card : MonoBehaviour, IJsonable
         json.Add("FrontImage", new JSONString(frontImgUrl));
         json.Add("BackImage", new JSONString(backImgUrl));
         json.Add("isFaceDown", new JSONBool(isFaceDown));
+        json.Add("index", new JSONNumber(index));
+        json.Add("deckId", new JSONNumber(deckId));
 
         return json;
     }
@@ -81,7 +83,7 @@ public class Card : MonoBehaviour, IJsonable
     public void DealToPlayer(Utility.ClientColor color)
     {
         HostScript currentHost = GameObject.Find("NetworkHost").GetComponent<HostScript>();
-        currentHost.sendToClient(color, this, "Card");
+        currentHost.sendToClient(color, this, "card");
     }
 
     public void PlaceCardOnTopOfDeck(Card card)

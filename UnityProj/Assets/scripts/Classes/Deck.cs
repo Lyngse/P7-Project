@@ -64,7 +64,7 @@ public class Deck : MonoBehaviour {
             }
         }
 
-        foreach (Transform card in _cards)
+        //foreach (Transform card in _cards)
         //{
         //    card.transform.GetChild(0).GetComponent<MeshRenderer>().material.mainTexture = card.GetComponent<Card>().frontImg;
         //    card.transform.GetChild(1).GetComponent<MeshRenderer>().material.mainTexture = card.GetComponent<Card>().backImg;
