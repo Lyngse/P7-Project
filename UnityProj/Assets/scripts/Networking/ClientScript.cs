@@ -11,6 +11,7 @@ class ClientScript : NetworkScript
 {
     public Canvas connectCanvas;
     public Canvas gameCanvas;
+    public HandController handController;
     Button connectButton;
     InputField codeInput;
     Text colorText;
@@ -68,6 +69,10 @@ class ClientScript : NetworkScript
             case "string":
                 var stringPackage = new StringPackage(package);
                 Debug.Log(stringPackage.package);
+                break;
+
+            case "card":
+                handController.addCard(package);
                 break;
             default:
                 break;

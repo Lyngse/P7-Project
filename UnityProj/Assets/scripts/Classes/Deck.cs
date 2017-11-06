@@ -56,19 +56,19 @@ public class Deck : MonoBehaviour {
 
                 Transform newCard = Instantiate(cardPrefab);
 
-                newCard.gameObject.SetActive(false);
-                newCard.GetComponent<Card>().backImg = cardBack;
-                newCard.GetComponent<Card>().frontImg = CropImageToCard(sourceTex, (i * cardWidth), (y * cardHeight), cardWidth, cardHeight);
+                //newCard.gameObject.SetActive(false);
+                //newCard.GetComponent<Card>().backImg = cardBack;
+                //newCard.GetComponent<Card>().frontImg = CropImageToCard(sourceTex, (i * cardWidth), (y * cardHeight), cardWidth, cardHeight);
 
                 _cards.Add(newCard);
             }
         }
 
         foreach (Transform card in _cards)
-        {
-            card.transform.GetChild(0).GetComponent<MeshRenderer>().material.mainTexture = card.GetComponent<Card>().frontImg;
-            card.transform.GetChild(1).GetComponent<MeshRenderer>().material.mainTexture = card.GetComponent<Card>().backImg;
-        }
+        //{
+        //    card.transform.GetChild(0).GetComponent<MeshRenderer>().material.mainTexture = card.GetComponent<Card>().frontImg;
+        //    card.transform.GetChild(1).GetComponent<MeshRenderer>().material.mainTexture = card.GetComponent<Card>().backImg;
+        //}
 
         this.enabled = true;
     }
