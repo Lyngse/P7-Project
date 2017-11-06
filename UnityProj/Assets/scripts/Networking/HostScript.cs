@@ -21,6 +21,11 @@ class HostScript : NetworkScript
         webSocket.Send(json.ToString());
     }
 
+    protected override void onClose()
+    {
+        Debug.Log("Connection Lost!");
+    }
+
     protected override void onMessage(string data)
     {
         Debug.Log(data);
@@ -35,6 +40,10 @@ class HostScript : NetworkScript
             case "client_joined":
                 clientColors.Add(options.color);
                 sendToClient(options.color, new StringPackage(options.color.ToString()), "string");
+                break;
+            case "client_disconnected":
+                Debug.Log("Client Disconnected: " + options.color.ToString());
+                clientColors.Remove(options.color);
                 break;
             default:
                 break;
