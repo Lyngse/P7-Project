@@ -57,11 +57,6 @@ public class InteractionMenuController : MonoBehaviour {
                         showColors.menu = currentMenu;
                         showColors.cardTransform = currTrans;
                         hideColors.menu = currentMenu;
-                        for (int i = 0; i < currentMenu.canvas.transform.GetChild(1).childCount; i++)
-                        {
-                            var child = currentMenu.canvas.transform.GetChild(1).GetChild(i).GetComponent<DealToPlayer>();
-                            child.cardTransform = currTrans;
-                        }
                     }
                 }
                 else

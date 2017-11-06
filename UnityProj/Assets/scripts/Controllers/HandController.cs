@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using SimpleJSON;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -6,25 +7,12 @@ using UnityEngine.EventSystems;
 public class HandController : MonoBehaviour
 {
     private Plane gamePlane = new Plane(Vector3.up, Vector3.zero);
-    List<GameObject> handObjects = new List<GameObject>();
-    private float xMin;
+    List<Transform> handObjects = new List<Transform>();
+    private float xMin = 7.5f;
     public Camera cam;
     public Transform cardPrefab;
 
     Vector3 lastScreenPos;
-
-    // Use this for initialization
-    void Start()
-    {
-        for (int i = 0; i < 10; i++)
-        {
-            GameObject card = Instantiate(cardPrefab).gameObject;
-            card.transform.parent = GameObject.Find("HandController").transform;
-            card.transform.position = new Vector3((i * 7.5f), 0, 0);
-            handObjects.Add(card);
-        }
-        xMin = 7.5f;
-    }
 
     // Update is called once per frame
     void Update()
@@ -59,6 +47,22 @@ public class HandController : MonoBehaviour
         }
         lastScreenPos = currentScreenPos;
 
+    }
+
+    public void addCard(JSONNode jsonCard)
+    {
+        Transform cardTrans = Instantiate(cardPrefab);
+        cardTrans.position = new Vector3(handObjects.Count * 7.5f, 0, 0);
+        Card card = cardTrans.GetComponent<Card>();
+        card.Instantiate(jsonCard);
+        handObjects.Add(cardTrans);
+    }
+
+    public void addObject(Transform obj)
+    {
+        handObjects.Add(obj);
+        obj.transform.parent = GameObject.Find("HandController").transform;
+        obj.transform.position = new Vector3((handObjects.Count - 1 * 7.5f), 0, 0);
     }
 
     private Vector3 screenToPlane(Vector3 screenPoint)
