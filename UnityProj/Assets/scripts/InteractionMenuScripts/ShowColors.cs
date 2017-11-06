@@ -36,14 +36,14 @@ public class ShowColors : MonoBehaviour, IPointerUpHandler
 
         menu.canvas.transform.GetChild(0).GetComponent<Button>().gameObject.SetActive(false);
         menu.canvas.transform.GetChild(1).GetComponent<Button>().gameObject.SetActive(true);
-        currentHost.clientColors.Add(Utility.ClientColor.red);
-        currentHost.clientColors.Add(Utility.ClientColor.black);
-        currentHost.clientColors.Add(Utility.ClientColor.blue);
-        currentHost.clientColors.Add(Utility.ClientColor.green);
-        currentHost.clientColors.Add(Utility.ClientColor.orange);
-        currentHost.clientColors.Add(Utility.ClientColor.purple);
-        currentHost.clientColors.Add(Utility.ClientColor.white);
-        currentHost.clientColors.Add(Utility.ClientColor.yellow);
+        //currentHost.clientColors.Add(Utility.ClientColor.red);
+        //currentHost.clientColors.Add(Utility.ClientColor.black);
+        //currentHost.clientColors.Add(Utility.ClientColor.blue);
+        //currentHost.clientColors.Add(Utility.ClientColor.green);
+        //currentHost.clientColors.Add(Utility.ClientColor.orange);
+        //currentHost.clientColors.Add(Utility.ClientColor.purple);
+        //currentHost.clientColors.Add(Utility.ClientColor.white);
+        //currentHost.clientColors.Add(Utility.ClientColor.yellow);
 
 
         for (int i = 0; i < currentHost.clientColors.Count; i++)
@@ -52,12 +52,11 @@ public class ShowColors : MonoBehaviour, IPointerUpHandler
             newBtn.transform.parent = colorPicker.transform;
             newBtn.transform.position = colorPicker.transform.position + positions[i];
             newBtn.image.color = Utility.colors[(int)currentHost.clientColors[i]];
+            newBtn.GetComponent<DealToPlayer>().color = currentHost.clientColors[i];
+            newBtn.GetComponent<DealToPlayer>().cardTransform = cardTransform;
+            newBtn.GetComponent<DealToPlayer>().menu = menu;
         }
-        for (int i = 0; i < menu.canvas.transform.GetChild(1).childCount; i++)
-        {
-            var child = menu.canvas.transform.GetChild(1).GetChild(i).GetComponent<DealToPlayer>();
-            child.cardTransform = cardTransform;
-        }
+
     }
 
 

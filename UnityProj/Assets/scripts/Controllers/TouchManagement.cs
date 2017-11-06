@@ -13,11 +13,15 @@ public class TouchManagement : MonoBehaviour {
     private Camera cam;
     private GrabObject grabObject = new GrabObject();
     private InteractionMenuController imc = new InteractionMenuController();
+    public Transform cardPrefab;
 
 
     private void Start()
     {
         this.cam = Camera.main;
+        Transform ct = Instantiate(cardPrefab);
+        Card card = ct.GetComponent<Card>();
+        card.Instantiate(0,0, "http://i.imgur.com/hgumn3h.jpg", "http://www.google.fr/url?source=imglanding&ct=img&q=http://mywastedlife.com/CAH/img/back-white.png&sa=X&ved=0CAkQ8wdqFQoTCIOlwO7IhcYCFQFYFAodYnoAUg&usg=AFQjCNGdlrUGLinNrm18KedLAfCNPW3x6w", false);
     }
 
 
