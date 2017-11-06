@@ -5,6 +5,7 @@ using System.Text;
 using WebSocketSharp;
 using SimpleJSON;
 using UnityEngine;
+using System.Timers;
 
 abstract class NetworkScript : MonoBehaviour
 {
@@ -18,8 +19,11 @@ abstract class NetworkScript : MonoBehaviour
         webSocket.ConnectAsync();
         webSocket.OnOpen += socketOnOpen;
         webSocket.OnMessage += socketOnMessage;
+        Timer timer = new Timer(30000);
+        timer.Elapsed += new ElapsedEventHandler(Ping);
+        timer.Enabled = true;
     }
-
+    
     private void Update()
     {
         if (bufferQueue.Count > 0)
@@ -37,6 +41,11 @@ abstract class NetworkScript : MonoBehaviour
                     break;
             }
         }
+    }
+
+    private void Ping(object source, ElapsedEventArgs e)
+    {
+        webSocket.Ping();
     }
 
     protected abstract void onOpen();
