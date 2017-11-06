@@ -9,14 +9,20 @@ using WebSocketSharp;
 
 class ClientScript : NetworkScript
 {
-    public Button connectButton;
-    public InputField codeInput;
+    public Canvas connectCanvas;
+    public Canvas gameCanvas;
+    Button connectButton;
+    InputField codeInput;
+    Text colorText;
     Utility.ClientColor myColor = Utility.ClientColor.none;
 
     protected override void Start()
     {
         base.Start();
+        codeInput = connectCanvas.GetComponentInChildren<InputField>();
+        connectButton = connectCanvas.GetComponentInChildren<Button>();
         connectButton.onClick.AddListener(clientConnect);
+        colorText = gameCanvas.GetComponentsInChildren<Text>().First(text => text.name == "colorText");
     }
 
     void clientConnect()
@@ -45,6 +51,10 @@ class ClientScript : NetworkScript
                 break;
             case "color_change":
                 myColor = options.color;
+                connectCanvas.gameObject.SetActive(false);
+                gameCanvas.gameObject.SetActive(true);
+                colorText.text = myColor.ToString();
+                colorText.color = Utility.colors[(int)myColor];
                 break;
             default:
                 break;
