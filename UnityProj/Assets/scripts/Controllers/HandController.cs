@@ -52,6 +52,7 @@ public class HandController : MonoBehaviour
     public void addCard(JSONNode jsonCard)
     {
         Transform cardTrans = Instantiate(cardPrefab);
+        cardTrans.GetComponent<Rigidbody>().isKinematic = true;
         cardTrans.position = new Vector3(handObjects.Count * 7.5f, 0, 0);
         Card card = cardTrans.GetComponent<Card>();
         card.Instantiate(jsonCard);

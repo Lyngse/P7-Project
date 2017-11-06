@@ -40,6 +40,16 @@ class ClientScript : NetworkScript
         connectButton.interactable = true;
     }
 
+    protected override void onClose()
+    {
+        Debug.Log("Connection lost!");
+        myColor = Utility.ClientColor.none;
+        connectCanvas.gameObject.SetActive(true);
+        gameCanvas.gameObject.SetActive(false);
+        colorText.text = "";
+        colorText.color = Utility.colors[0];
+    }
+
     protected override void onMessage(string data)
     {
         Debug.Log(data);
@@ -56,6 +66,10 @@ class ClientScript : NetworkScript
                 gameCanvas.gameObject.SetActive(true);
                 colorText.text = myColor.ToString();
                 colorText.color = Utility.colors[(int)myColor];
+                break;
+            case "host_disconnected":
+                Debug.Log("host disconnected");
+                onClose();
                 break;
             default:
                 break;
