@@ -6,7 +6,6 @@ using SimpleJSON;
 using UnityEngine;
 using Assets.scripts;
 
-namespace Assets.scripts.Classes
 {
     public class Card : MonoBehaviour, IJsonable
     {
@@ -33,6 +32,7 @@ namespace Assets.scripts.Classes
             JSONNode json = new JSONObject();
             json.Add("FrontImage", new JSONString(frontImgUrl));
             json.Add("BackImage", new JSONString(backImgUrl));
+            json.Add("isFaceDown", new JSONBool(isFaceDown));
 
             return json;
         }
@@ -40,7 +40,7 @@ namespace Assets.scripts.Classes
         public void DealToPlayer(Utility.ClientColor color)
         {
             HostScript currentHost = GameObject.Find("NetworkHost").GetComponent<HostScript>();
-            currentHost.sendToClient(color, this.GetComponent<Card>(), "Card");
+            currentHost.sendToClient(color, this, "Card");
         }
 
         public void PlaceCardOnTopOfDeck(Card card)
