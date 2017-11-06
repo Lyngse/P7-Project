@@ -11,7 +11,7 @@ class HostScript : NetworkScript
 {
 
     public InputField codeField;
-    List<Utility.ClientColor> clientColors = new List<Utility.ClientColor>();
+    public List<Utility.ClientColor> clientColors = new List<Utility.ClientColor>();
 
     protected override void onOpen()
     {

@@ -19,15 +19,17 @@ public class InteractionMenuController : MonoBehaviour {
                 if (!currentMenu.isOpen)
                 {
                     RectTransform closeButton = currentMenu.canvas.transform.GetChild(0).GetComponent<RectTransform>();
+                    RectTransform colorPicker = currentMenu.canvas.transform.GetChild(1).GetComponent<RectTransform>();
                     Vector3 offset = new Vector3(touch.position.x - (Screen.width / 2), touch.position.y - (Screen.height / 2) + 50, 0);
                     closeButton.localPosition = offset;
+                    colorPicker.localPosition = offset;
                     currentMenu.canvas.GetComponent<Canvas>().enabled = true;   
                     currentMenu.isOpen = true;
-                    Flip flipper = currentMenu.canvas.transform.GetChild(0).GetChild(1).GetComponent<Flip>();
                     Rotate rotater = currentMenu.canvas.transform.GetChild(0).GetChild(0).GetComponent<Rotate>();
+                    Flip flipper = currentMenu.canvas.transform.GetChild(0).GetChild(1).GetComponent<Flip>();
                     Delete deleter = currentMenu.canvas.transform.GetChild(0).GetChild(7).GetChild(1).GetComponent<Delete>();
-                    flipper.currTrans = currTrans;
                     rotater.currTrans = currTrans;
+                    flipper.currTrans = currTrans;
                     deleter.currTrans = currTrans;
                     deleter.menu = currentMenu.canvas;
 
@@ -46,6 +48,15 @@ public class InteractionMenuController : MonoBehaviour {
                         currentMenu.canvas.transform.GetChild(0).GetChild(3).gameObject.SetActive(true);
                         RollDie rollDie = currentMenu.canvas.transform.GetChild(0).GetChild(3).GetComponent<RollDie>();
                         rollDie.dieTransform = currTrans;
+                    }
+                    else if(currTrans.tag == "Card")
+                    {
+                        currentMenu.canvas.transform.GetChild(0).GetChild(8).gameObject.SetActive(true);
+                        ShowColors showColors = currentMenu.canvas.transform.GetChild(0).GetChild(8).GetComponent<ShowColors>();
+                        HideColors hideColors = currentMenu.canvas.transform.GetChild(1).GetComponent<HideColors>();
+                        showColors.menu = currentMenu;
+                        showColors.cardTransform = currTrans;
+                        hideColors.menu = currentMenu;
                     }
                 }
                 else

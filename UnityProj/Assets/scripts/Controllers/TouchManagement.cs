@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Assets.scripts.Classes;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class TouchManagement : MonoBehaviour {
     private Touch[] touches;
@@ -17,7 +18,6 @@ public class TouchManagement : MonoBehaviour {
     private void Start()
     {
         this.cam = Camera.main;
-        
     }
 
 

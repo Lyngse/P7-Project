@@ -1,11 +1,16 @@
-﻿using System;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using UnityEngine;
+using UnityEngine.EventSystems;
 
-namespace Assets.scripts.InteractionMenuScripts
+public class DealToPlayer : MonoBehaviour, IPointerUpHandler
 {
-    class DealToPlayer
+    public Transform cardTransform;
+    public Utility.ClientColor Color;
+
+    public virtual void OnPointerUp(PointerEventData ped)
     {
+        cardTransform.GetComponent<Card>().DealToPlayer(Color);
+        
     }
 }
