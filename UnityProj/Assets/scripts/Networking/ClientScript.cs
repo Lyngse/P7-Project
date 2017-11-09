@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using WebSocketSharp;
 
@@ -43,11 +44,9 @@ class ClientScript : NetworkScript
     protected override void onClose()
     {
         Debug.Log("Connection lost!");
-        myColor = Utility.ClientColor.none;
-        connectCanvas.gameObject.SetActive(true);
-        gameCanvas.gameObject.SetActive(false);
-        colorText.text = "";
-        colorText.color = Utility.colors[0];
+        resetValues();
+        connectButton.interactable = false;
+        SceneManager.LoadScene("MenuScene", LoadSceneMode.Single);
     }
 
     protected override void onMessage(string data)
@@ -69,11 +68,21 @@ class ClientScript : NetworkScript
                 break;
             case "host_disconnected":
                 Debug.Log("host disconnected");
-                onClose();
+                resetValues();
                 break;
             default:
                 break;
         }
+    }
+
+    void resetValues()
+    {
+        myColor = Utility.ClientColor.none;
+        connectCanvas.gameObject.SetActive(true);
+        gameCanvas.gameObject.SetActive(false);
+        colorText.text = "";
+        colorText.color = Utility.colors[0];
+        codeInput.text = "";
     }
 
     void handlePackage(string type, JSONNode package)
@@ -93,7 +102,7 @@ class ClientScript : NetworkScript
         }
     }
 
-    void sendToHost(IJsonable package, string packageType)
+    public void sendToHost(IJsonable package, string packageType)
     {
         var options = new MessageOptions("client_to_host", code, packageType: packageType);
         var wbm = new WebSocketMessage(options, package);
