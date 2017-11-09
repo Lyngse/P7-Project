@@ -45,6 +45,25 @@ class HostScript : NetworkScript
                 Debug.Log("Client Disconnected: " + options.color.ToString());
                 clientColors.Remove(options.color);
                 break;
+            case "package_from_client":
+                HandleClientPackage(options.packageType, message["package"]);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void HandleClientPackage(string type, JSONNode package)
+    {
+        switch (type)
+        {
+            case "card":
+                var cardPrefab = Resources.Load<Transform>("Prefabs/Card");
+                Transform newCard = Instantiate(cardPrefab);
+                newCard.GetComponent<Card>().Instantiate(package);
+                newCard.position = new Vector3((transform.position.x + 7), 5, transform.position.z);
+                newCard.gameObject.SetActive(true);
+                break;
             default:
                 break;
         }
