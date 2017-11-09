@@ -9,9 +9,9 @@ using System.Collections;
 
 public class Card : MonoBehaviour, IJsonable
 {
-    string frontImgUrl;
-    string backImgUrl;
-    int index;
+    public string frontImgUrl;
+    public string backImgUrl;
+    public int index;
     int deckId;
     bool isFaceDown;
     WWWController wwwController;

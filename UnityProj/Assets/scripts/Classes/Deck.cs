@@ -7,9 +7,9 @@ public class Deck : MonoBehaviour {
 
     private List<Transform> _cards;
     private List<Transform> _dealtCards;
-    private string deckSourceUrl;
+    private string deckSourceUrl = "http://i.imgur.com/hgumn3h.jpg";
     private Texture2D sourceTex;
-    private string cardBackUrl;
+    private string cardBackUrl = "http://www.google.fr/url?source=imglanding&ct=img&q=http://mywastedlife.com/CAH/img/back-white.png&sa=X&ved=0CAkQ8wdqFQoTCIOlwO7IhcYCFQFYFAodYnoAUg&usg=AFQjCNGdlrUGLinNrm18KedLAfCNPW3x6w";
     private Texture2D cardBack;
 
     public bool isFaceDown = true;
@@ -21,15 +21,9 @@ public class Deck : MonoBehaviour {
         StartCoroutine(InsBack());      
     }
 
-    public Deck(string deckSource, string cardBack)
-    {
-        this.deckSourceUrl = deckSource;
-        this.cardBackUrl = cardBack;
-    }
-
     IEnumerator InsBack()
     {
-        WWW backWWW = new WWW("http://www.google.fr/url?source=imglanding&ct=img&q=http://mywastedlife.com/CAH/img/back-white.png&sa=X&ved=0CAkQ8wdqFQoTCIOlwO7IhcYCFQFYFAodYnoAUg&usg=AFQjCNGdlrUGLinNrm18KedLAfCNPW3x6w");
+        WWW backWWW = new WWW(cardBackUrl);
         yield return backWWW;
         this.cardBack = backWWW.texture;
         ImageForDeck();        
@@ -38,7 +32,7 @@ public class Deck : MonoBehaviour {
 
     IEnumerator InsFront()
     {
-        WWW deckWWW = new WWW("http://i.imgur.com/hgumn3h.jpg");
+        WWW deckWWW = new WWW(deckSourceUrl);
         yield return deckWWW;
         this.sourceTex = deckWWW.texture;
         InstantiateDeck();
@@ -56,19 +50,20 @@ public class Deck : MonoBehaviour {
 
                 Transform newCard = Instantiate(cardPrefab);
 
-                //newCard.gameObject.SetActive(false);
+                newCard.gameObject.SetActive(false);
                 //newCard.GetComponent<Card>().backImg = cardBack;
+                newCard.GetComponent<Card>().backImgUrl = cardBackUrl;
                 //newCard.GetComponent<Card>().frontImg = CropImageToCard(sourceTex, (i * cardWidth), (y * cardHeight), cardWidth, cardHeight);
+                newCard.GetComponent<Card>().frontImgUrl = deckSourceUrl;
+
+                newCard.transform.GetChild(0).GetComponent<MeshRenderer>().material.mainTexture = CropImageToCard(sourceTex, (i * cardWidth), (y * cardHeight), cardWidth, cardHeight);
+                newCard.transform.GetChild(1).GetComponent<MeshRenderer>().material.mainTexture = cardBack;
+
+                newCard.GetComponent<Card>().index = i;
 
                 _cards.Add(newCard);
             }
         }
-
-        //foreach (Transform card in _cards)
-        //{
-        //    card.transform.GetChild(0).GetComponent<MeshRenderer>().material.mainTexture = card.GetComponent<Card>().frontImg;
-        //    card.transform.GetChild(1).GetComponent<MeshRenderer>().material.mainTexture = card.GetComponent<Card>().backImg;
-        //}
 
         this.enabled = true;
     }
@@ -127,11 +122,16 @@ public class Deck : MonoBehaviour {
         GetComponent<Rigidbody>().AddForce(0, 100, 0);
     }
 
-    public void DealToPlayerFromDeck()
+    public void DealToPlayer(Utility.ClientColor color)
     {
         if (this.isFaceDown)
         {
             //Send the first card of the list to the given player's hand
+            Card card = _cards[0].GetComponent<Card>();
+            HostScript currentHost = GameObject.Find("NetworkHost").GetComponent<HostScript>();
+            currentHost.sendToClient(color, card, "card");
+            _dealtCards.Add(_cards[0]);
+            _cards.Remove(_cards[0]);
         }
         else
         {

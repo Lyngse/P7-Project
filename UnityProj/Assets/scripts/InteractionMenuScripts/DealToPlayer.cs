@@ -7,14 +7,23 @@ using UnityEngine.UI;
 
 public class DealToPlayer : MonoBehaviour, IPointerUpHandler
 {
-    public Transform cardTransform;
+    public Transform currentTransform;
     public Utility.ClientColor color;
     public MenuInfo menu;
 
     public virtual void OnPointerUp(PointerEventData ped)
     {
-        cardTransform.GetComponent<Card>().DealToPlayer(color);
-        Destroy(menu.hitTransform.gameObject);
-        Destroy(menu.canvas);
+        if(currentTransform.tag == "Card")
+        {
+            currentTransform.GetComponent<Card>().DealToPlayer(color);
+            Destroy(menu.hitTransform.gameObject);
+            Destroy(menu.canvas.gameObject);
+        }
+        else if(currentTransform.tag == "Deck")
+        {
+            currentTransform.GetComponent<Deck>().DealToPlayer(color);
+            Destroy(menu.hitTransform.gameObject);
+            Destroy(menu.canvas.gameObject);
+        }
     }
 }

@@ -37,10 +37,16 @@ public class InteractionMenuController : MonoBehaviour {
                     {
                         currentMenu.canvas.transform.GetChild(0).GetChild(2).gameObject.SetActive(true);
                         currentMenu.canvas.transform.GetChild(0).GetChild(4).gameObject.SetActive(true);
+                        currentMenu.canvas.transform.GetChild(0).GetChild(8).gameObject.SetActive(true);
                         DrawFromDeck drawFromDeck = currentMenu.canvas.transform.GetChild(0).GetChild(2).GetComponent<DrawFromDeck>();
                         ShuffleDeck shuffleDeck = currentMenu.canvas.transform.GetChild(0).GetChild(4).GetComponent<ShuffleDeck>();
+                        ShowColors showColors = currentMenu.canvas.transform.GetChild(0).GetChild(8).GetComponent<ShowColors>();
+                        HideColors hideColors = currentMenu.canvas.transform.GetChild(1).GetComponent<HideColors>();
                         drawFromDeck.deckTransform = currentTransform;
                         shuffleDeck.deckTransform = currentTransform;
+                        showColors.menu = currentMenu;
+                        showColors.cardTransform = currentTransform;
+                        hideColors.menu = currentMenu;
 
                     }
                     else if(currentTransform.tag == "Die")
