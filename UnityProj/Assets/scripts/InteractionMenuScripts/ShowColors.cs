@@ -53,7 +53,7 @@ public class ShowColors : MonoBehaviour, IPointerUpHandler
             newBtn.transform.position = colorPicker.transform.position + positions[i];
             newBtn.image.color = Utility.colors[(int)currentHost.clientColors[i]];
             newBtn.GetComponent<DealToPlayer>().color = currentHost.clientColors[i];
-            newBtn.GetComponent<DealToPlayer>().cardTransform = cardTransform;
+            newBtn.GetComponent<DealToPlayer>().currentTransform = cardTransform;
             newBtn.GetComponent<DealToPlayer>().menu = menu;
         }
 

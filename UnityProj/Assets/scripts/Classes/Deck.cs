@@ -2,78 +2,67 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Assets.scripts.Classes;
+using System.Linq;
 
 public class Deck : MonoBehaviour {
 
-    private List<Transform> _cards;
-    private List<Transform> _dealtCards;
-    private string deckSourceUrl;
-    private Texture2D sourceTex;
-    private string cardBackUrl;
-    private Texture2D cardBack;
-
+    private List<int> _cards;
+    private List<int> _dealtCards;
+    private string deckSourceUrl = "http://i.imgur.com/hgumn3h.jpg";
+    private string cardBackUrl = "http://www.google.fr/url?source=imglanding&ct=img&q=http://mywastedlife.com/CAH/img/back-white.png&sa=X&ved=0CAkQ8wdqFQoTCIOlwO7IhcYCFQFYFAodYnoAUg&usg=AFQjCNGdlrUGLinNrm18KedLAfCNPW3x6w";
     public bool isFaceDown = true;
+    private int id;
+    WWWController wwwcontroller;
 
     private void Start()
     {
-        _cards = new List<Transform>();
-        _dealtCards = new List<Transform>();
-        StartCoroutine(InsBack());      
+        InstantiateDeck(deckSourceUrl, cardBackUrl);
     }
 
-    public Deck(string deckSource, string cardBack)
+    public void InstantiateDeck(string frontUrl, string backUrl)
     {
-        this.deckSourceUrl = deckSource;
-        this.cardBackUrl = cardBack;
+        deckSourceUrl = frontUrl;
+        cardBackUrl = backUrl;
+        ImageForDeck(Resources.Load<Texture2D>("loading"));
+        _cards = new List<int>(Enumerable.Range(0, 69));
+        _dealtCards = new List<int>();
+        wwwcontroller = GameObject.Find("SceneScripts").GetComponent<WWWController>();
+        id = wwwcontroller.CreateDeck(frontUrl, backUrl, x => ImageForDeck(x.Second));
     }
 
-    IEnumerator InsBack()
-    {
-        WWW backWWW = new WWW("http://www.google.fr/url?source=imglanding&ct=img&q=http://mywastedlife.com/CAH/img/back-white.png&sa=X&ved=0CAkQ8wdqFQoTCIOlwO7IhcYCFQFYFAodYnoAUg&usg=AFQjCNGdlrUGLinNrm18KedLAfCNPW3x6w");
-        yield return backWWW;
-        this.cardBack = backWWW.texture;
-        ImageForDeck();        
-        StartCoroutine(InsFront());
-    }
+    //public void InstantiateDecks(string frontUrl, string backUrl)
+    //{
+    //    var cardHeight = this.sourceTex.height / 7;
+    //    var cardWidth = this.sourceTex.width / 10;
+    //    for (int i = 0; i < 10; i++)
+    //    {
+    //        for (int y = 0; y < 7; y++)
+    //        {
+    //            var cardPrefab = Resources.Load<Transform>("Prefabs/Card");
 
-    IEnumerator InsFront()
-    {
-        WWW deckWWW = new WWW("http://i.imgur.com/hgumn3h.jpg");
-        yield return deckWWW;
-        this.sourceTex = deckWWW.texture;
-        InstantiateDeck();
-    }    
+    //            Transform newCard = Instantiate(cardPrefab);
 
-    public void InstantiateDeck()
-    {
-        var cardHeight = this.sourceTex.height / 7;
-        var cardWidth = this.sourceTex.width / 10;
-        for (int i = 0; i < 10; i++)
-        {
-            for (int y = 0; y < 7; y++)
-            {
-                var cardPrefab = Resources.Load<Transform>("Prefabs/Card");
+    //            newCard.gameObject.SetActive(false);
+    //            //newCard.GetComponent<Card>().backImg = cardBack;
+    //            newCard.GetComponent<Card>().backImgUrl = cardBackUrl;
+    //            //newCard.GetComponent<Card>().frontImg = CropImageToCard(sourceTex, (i * cardWidth), (y * cardHeight), cardWidth, cardHeight);
+    //            newCard.GetComponent<Card>().frontImgUrl = deckSourceUrl;
 
-                Transform newCard = Instantiate(cardPrefab);
+    //            newCard.transform.GetChild(0).GetComponent<MeshRenderer>().material.mainTexture = CropImageToCard(sourceTex, (i * cardWidth), (y * cardHeight), cardWidth, cardHeight);
+    //            newCard.transform.GetChild(1).GetComponent<MeshRenderer>().material.mainTexture = cardBack;
 
-                //newCard.gameObject.SetActive(false);
-                //newCard.GetComponent<Card>().backImg = cardBack;
-                //newCard.GetComponent<Card>().frontImg = CropImageToCard(sourceTex, (i * cardWidth), (y * cardHeight), cardWidth, cardHeight);
+    //            newCard.GetComponent<Card>().id = i;
 
-                _cards.Add(newCard);
-            }
-        }
+    //            //newCard.GetComponent<Card>().Instantiate();
 
-        //foreach (Transform card in _cards)
-        //{
-        //    card.transform.GetChild(0).GetComponent<MeshRenderer>().material.mainTexture = card.GetComponent<Card>().frontImg;
-        //    card.transform.GetChild(1).GetComponent<MeshRenderer>().material.mainTexture = card.GetComponent<Card>().backImg;
-        //}
+    //            _cards.Add(newCard);
+    //        }
+    //    }
 
-        this.enabled = true;
-    }
+    //    this.enabled = true;
+    //}
 
-    private void ImageForDeck()
+    private void ImageForDeck(Texture2D deckBack)
     {
         Vector3[] vertices =
         {
@@ -96,7 +85,7 @@ public class Deck : MonoBehaviour {
             };
 
         MeshRenderer mr = transform.GetChild(0).GetComponent<MeshRenderer>();
-        mr.material.mainTexture = cardBack;
+        mr.material.mainTexture = deckBack;
         Mesh mesh = transform.GetChild(0).GetComponent<MeshFilter>().mesh;
 
         mesh.Clear();
@@ -107,11 +96,11 @@ public class Deck : MonoBehaviour {
         transform.GetChild(0).gameObject.SetActive(true);
     }
 
-    public void ResetDeck()
-    {
-        InstantiateDeck();
-        _dealtCards.Clear();
-    }
+    //public void ResetDeck()
+    //{
+    //    InstantiateDeck();
+    //    _dealtCards.Clear();
+    //}
 
     public void ShuffleDeck()
     {
@@ -119,7 +108,7 @@ public class Deck : MonoBehaviour {
         for (int i = 0; i < this._cards.Count; i++)
         {
             int j = random.Next(i, this._cards.Count);
-            Transform temp = this._cards[i];
+            int temp = this._cards[i];
             this._cards[i] = this._cards[j];
             this._cards[j] = temp;
         }
@@ -127,11 +116,16 @@ public class Deck : MonoBehaviour {
         GetComponent<Rigidbody>().AddForce(0, 100, 0);
     }
 
-    public void DealToPlayerFromDeck()
+    public void DealToPlayer(Utility.ClientColor color)
     {
         if (this.isFaceDown)
         {
             //Send the first card of the list to the given player's hand
+            //Card card = _cards[0].GetComponent<Card>();
+            //HostScript currentHost = GameObject.Find("NetworkHost").GetComponent<HostScript>();
+            //currentHost.sendToClient(color, card, "card");
+            //_dealtCards.Add(_cards[0]);
+            //_cards.Remove(_cards[0]);
         }
         else
         {
@@ -152,37 +146,29 @@ public class Deck : MonoBehaviour {
 
     public void DrawToTable()
     {
-        if (this.isFaceDown && _cards.Count >= 1)
+        if(_cards.Count >= 1)
         {
-            //Send the first card of the list to the table next to the deck
-            _cards[0].transform.Rotate(new Vector3(-180, 0, 180));
-            _cards[0].transform.position = new Vector3((transform.position.x + 7), 5, transform.position.z);
-            _cards[0].transform.gameObject.SetActive(true);
-            _dealtCards.Add(_cards[0]);
-            _cards.Remove(_cards[0]);
-        }
-        else if(!this.isFaceDown && _cards.Count >= 1)
-        {
-            //Send the last card of the list to the table next tot the deck
-            _cards[_cards.Count - 1].transform.position = new Vector3((transform.position.x + 7), 5, transform.position.z);
-            _cards[_cards.Count - 1].transform.gameObject.SetActive(true);
-            _dealtCards.Add(_cards[_cards.Count - 1]);
-            _cards.Remove(_cards[_cards.Count - 1]);
-        }
-    }
+            var cardPrefab = Resources.Load<Transform>("Prefabs/Card");
+            Transform newCard = Instantiate(cardPrefab);
+            int cardID;
 
-    //Cropping the image file for each card, will be split into 70 different cards.
-    public Texture2D CropImageToCard(Texture2D sourceTex, float sourceX, float sourceY, float sourceWidth, float sourceHeight)
-    {
-        int x = Mathf.FloorToInt(sourceX);
-        int y = Mathf.FloorToInt(sourceY);
-        int width = Mathf.FloorToInt(sourceWidth);
-        int height = Mathf.FloorToInt(sourceHeight);
-
-        Color[] pix = sourceTex.GetPixels(x, y, width, height);
-        Texture2D destTex = new Texture2D(width, height);
-        destTex.SetPixels(pix);
-        destTex.Apply();
-        return destTex;
-    }
+            if (this.isFaceDown)
+            {
+                cardID = _cards[0];
+                newCard.Rotate(new Vector3(-180, 0, 180));
+                _dealtCards.Add(_cards[0]);
+                _cards.Remove(_cards[0]);
+            }
+            else
+            {
+                cardID = _cards[_cards.Count - 1];
+                _dealtCards.Add(_cards[_cards.Count - 1]);
+                _cards.Remove(_cards[_cards.Count - 1]);
+            }
+            newCard.GetComponent<Card>().Instantiate(id, cardID, deckSourceUrl, cardBackUrl, true);
+            newCard.position = new Vector3((transform.position.x + 7), 5, transform.position.z);
+            newCard.gameObject.SetActive(true);
+            
+        }
+    }    
 }

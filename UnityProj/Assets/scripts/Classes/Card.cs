@@ -9,19 +9,19 @@ using System.Collections;
 
 public class Card : MonoBehaviour, IJsonable
 {
-    string frontImgUrl;
-    string backImgUrl;
-    int index;
+    public string frontImgUrl;
+    public string backImgUrl;
+    public int id;
     int deckId;
     bool isFaceDown;
     WWWController wwwController;
 
-    public void Instantiate(int deckId, int index, string frontImgUrl, string backImgUrl, bool isFaceDown = true)
+    public void Instantiate(int deckId, int id, string frontImgUrl, string backImgUrl, bool isFaceDown = true)
     {
         this.frontImgUrl = frontImgUrl;
         this.backImgUrl = backImgUrl;
         this.isFaceDown = isFaceDown;
-        this.index = index;
+        this.id = id;
         this.deckId = deckId;
         init();
     }
@@ -34,29 +34,15 @@ public class Card : MonoBehaviour, IJsonable
 
     void init()
     {
-        if(wwwController == null)
-            wwwController = GameObject.Find("SceneScripts").GetComponent<WWWController>();
-        Texture2D sourceFrontTex;
-        Texture2D sourceBackTex;
-        if (wwwController.deckDict.ContainsKey(deckId))
+        transform.GetChild(0).GetComponent<MeshRenderer>().material.mainTexture = Resources.Load<Texture2D>("loading");
+        transform.GetChild(1).GetComponent<MeshRenderer>().material.mainTexture = Resources.Load<Texture2D>("loading");
+
+        wwwController = GameObject.Find("SceneScripts").GetComponent<WWWController>();
+        wwwController.GetCard(id, deckId, frontImgUrl, backImgUrl, (textures =>
         {
-            sourceFrontTex = wwwController.deckDict[deckId].First;
-            sourceBackTex = wwwController.deckDict[deckId].Second;
-
-            var backTex = sourceBackTex;
-
-            var cardHeight = sourceFrontTex.height / 7f;
-            var cardWidth = sourceFrontTex.width / 10f;
-            var frontTex = CropImageToCard(sourceFrontTex, ((index / 7) * cardWidth), ((index % 7) * cardHeight), cardWidth, cardHeight);
-
-            transform.GetChild(0).GetComponent<MeshRenderer>().material.mainTexture = frontTex;
-            transform.GetChild(1).GetComponent<MeshRenderer>().material.mainTexture = backTex;
-        }
-        else
-        {
-            StartCoroutine(wwwController.getDeck(deckId, frontImgUrl, backImgUrl, init));
-        }
-        
+            transform.GetChild(0).GetComponent<MeshRenderer>().material.mainTexture = textures.First;
+            transform.GetChild(1).GetComponent<MeshRenderer>().material.mainTexture = textures.Second;
+        }));        
     }
 
     public void fromJson(JSONNode json)
@@ -64,7 +50,7 @@ public class Card : MonoBehaviour, IJsonable
         frontImgUrl = json["FrontImage"].Value;
         backImgUrl = json["BackImage"].Value;
         isFaceDown = json["isFaceDown"].AsBool;
-        index = json["index"].AsInt;
+        id = json["index"].AsInt;
         deckId = json["deckId"].AsInt;
     }
 
@@ -74,7 +60,7 @@ public class Card : MonoBehaviour, IJsonable
         json.Add("FrontImage", new JSONString(frontImgUrl));
         json.Add("BackImage", new JSONString(backImgUrl));
         json.Add("isFaceDown", new JSONBool(isFaceDown));
-        json.Add("index", new JSONNumber(index));
+        json.Add("index", new JSONNumber(id));
         json.Add("deckId", new JSONNumber(deckId));
 
         return json;
