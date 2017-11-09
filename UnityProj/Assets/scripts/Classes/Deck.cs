@@ -61,6 +61,8 @@ public class Deck : MonoBehaviour {
 
                 newCard.GetComponent<Card>().index = i;
 
+                newCard.GetComponent<Card>().Instantiate();
+
                 _cards.Add(newCard);
             }
         }
