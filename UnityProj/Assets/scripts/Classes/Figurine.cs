@@ -41,11 +41,11 @@ public class Figurine : MonoBehaviour, IJsonable
     {
         transform.GetComponent<MeshRenderer>().material.mainTexture = texture;
         transform.GetComponent<MeshFilter>().mesh = mesh;
-        transform.gameObject.AddComponent<MeshCollider>();
-        transform.GetComponent<MeshCollider>().convex = true;
-        transform.gameObject.AddComponent<Rigidbody>();
-        transform.GetComponent<Rigidbody>().isKinematic = false;
-        transform.GetComponent<Rigidbody>().collisionDetectionMode = CollisionDetectionMode.Continuous;
+        //transform.gameObject.AddComponent<MeshCollider>();
+        //transform.GetComponent<MeshCollider>().convex = true;
+        //transform.gameObject.AddComponent<Rigidbody>();
+        //transform.GetComponent<Rigidbody>().isKinematic = false;
+        //transform.GetComponent<Rigidbody>().collisionDetectionMode = CollisionDetectionMode.Continuous;
         transform.gameObject.tag = "Figurine";
     }
 
