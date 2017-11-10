@@ -8,12 +8,35 @@ using UnityEngine;
 public class WWWController: MonoBehaviour
 {
     Dictionary<int, Tuple<Texture2D, Texture2D>> deckDict = new Dictionary<int, Tuple<Texture2D, Texture2D>>();
-    int nextID = 0;
+    Dictionary<int, Tuple<Texture2D, Mesh>> figurineDict = new Dictionary<int, Tuple<Texture2D, Mesh>>();
+    int nextDeckID = 0;
+    int nextFigurineID = 0;
+
+    public int CreateFigurine(string figurineUrl, string meshUrl, Action<Tuple<Texture2D, Mesh>> callback)
+    {
+        int id = nextFigurineID;
+        nextFigurineID++;
+        StartCoroutine(GetFigurine(id, figurineUrl, meshUrl, callback));
+        return id;
+    }
+
+    public IEnumerator GetFigurine(int id, string figurineUrl, string meshUrl, Action<Tuple<Texture2D, Mesh>> callback)
+    {
+        WWW figurineWWW = new WWW(figurineUrl);
+        WWW meshWWW = new WWW(meshUrl);
+        yield return figurineWWW;
+        yield return meshWWW;
+        var banana = Resources.Load<GameObject>("Prefabs/Banana");
+        Mesh mesh = banana.GetComponent<Mesh>();
+
+        figurineDict.Add(id, new Tuple<Texture2D, Mesh>(figurineWWW.texture, mesh));
+        callback(figurineDict[id]);
+    }
 
     public int CreateDeck(string frontUrl, string backUrl, Action<Tuple<Texture2D, Texture2D>> callback)
     {
-        int id = nextID;
-        nextID++;
+        int id = nextDeckID;
+        nextDeckID++;
         StartCoroutine(getDeck(id, frontUrl, backUrl, callback));
         return id;
     }

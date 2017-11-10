@@ -97,6 +97,9 @@ class ClientScript : NetworkScript
             case "card":
                 handController.addCard(package);
                 break;
+            case "figurine":
+                handController.addBanana(package);
+                break;
             default:
                 break;
         }

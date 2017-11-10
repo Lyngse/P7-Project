@@ -12,6 +12,7 @@ public class HandController : MonoBehaviour
     float leftMouseButtonDownTime;
     Transform selectedObj = null;
     public Transform cardPrefab;
+    public Transform figurinePrefab;
     public Canvas cardMenuCanvas;
     ClientScript clientScript;
 
@@ -125,6 +126,19 @@ public class HandController : MonoBehaviour
         Card card = cardTrans.GetComponent<Card>();
         card.Instantiate(jsonCard);
         handObjects.Add(cardTrans);
+    }
+
+    public void addBanana(JSONNode jsonBanana)
+    {
+        Transform bananaTrans = Instantiate(figurinePrefab);
+        bananaTrans.gameObject.AddComponent<Rigidbody>();
+        bananaTrans.GetComponent<Rigidbody>().isKinematic = true;
+        bananaTrans.gameObject.AddComponent<Figurine>();
+        Figurine figurine = bananaTrans.GetComponent<Figurine>();
+        bananaTrans.position = new Vector3(handObjects.Count * 7.5f, 0, 0);
+        figurine.Instantiate(jsonBanana);
+        handObjects.Add(bananaTrans);
+        
     }
 
     public void addObject(Transform obj)

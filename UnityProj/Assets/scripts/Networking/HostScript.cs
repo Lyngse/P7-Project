@@ -64,6 +64,9 @@ class HostScript : NetworkScript
                 newCard.position = new Vector3((transform.position.x + 7), 5, transform.position.z);
                 newCard.gameObject.SetActive(true);
                 break;
+            case "figurine":
+
+                break;
             default:
                 break;
         }
