@@ -9,7 +9,6 @@ public class InteractionMenuController : MonoBehaviour {
     
 	public void HandleMenu(RaycastHit hit, List<MenuInfo> menus, Touch touch)
     {
-
         if (menus.Exists(x => x.hitTransform == hit.transform))
         {
             MenuInfo currentMenu = menus.Find(x => x.hitTransform == hit.transform);

@@ -42,6 +42,8 @@ public class TouchManagement : MonoBehaviour {
                     {
                         TouchInfo touchinfo = new TouchInfo(t.fingerId, hit.transform, 0.0f);
                         infos.Add(touchinfo);
+                        if (hit.transform.gameObject.tag == "Figurine")
+                            Debug.Log("Figurine clicked");
                         if (!menus.Exists(x => x.hitTransform == hit.transform) && hit.transform.tag != "Undragable")
                         {
                             Canvas menu = Instantiate(GameObject.Find("InteractionMenu").GetComponent<Canvas>());

@@ -93,12 +93,11 @@ class ClientScript : NetworkScript
                 var stringPackage = new StringPackage(package);
                 Debug.Log(stringPackage.package);
                 break;
-
             case "card":
                 handController.addCard(package);
                 break;
             case "figurine":
-                handController.addBanana(package);
+                handController.addFigurine(package);
                 break;
             default:
                 break;

@@ -19,6 +19,12 @@ public class DealToPlayer : MonoBehaviour, IPointerUpHandler
             Destroy(menu.hitTransform.gameObject);
             Destroy(menu.canvas.gameObject);
         }
+        else if(currentTransform.tag == "Figurine")
+        {
+            currentTransform.GetComponent<Figurine>().DealToPlayer(color);
+            Destroy(menu.hitTransform.gameObject);
+            Destroy(menu.canvas.gameObject);
+        }
         else if(currentTransform.tag == "Deck")
         {
             currentTransform.GetComponent<Deck>().DealToPlayer(color);

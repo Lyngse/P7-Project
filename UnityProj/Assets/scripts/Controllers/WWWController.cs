@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using Assets.scripts;
 
 public class WWWController: MonoBehaviour
 {
@@ -26,9 +27,8 @@ public class WWWController: MonoBehaviour
         WWW meshWWW = new WWW(meshUrl);
         yield return figurineWWW;
         yield return meshWWW;
-        var banana = Resources.Load<GameObject>("Prefabs/Banana");
-        Mesh mesh = banana.GetComponent<Mesh>();
-
+        ObjImporter importer = new ObjImporter();
+        Mesh mesh = importer.ImportFile(meshWWW.text);
         figurineDict.Add(id, new Tuple<Texture2D, Mesh>(figurineWWW.texture, mesh));
         callback(figurineDict[id]);
     }

@@ -14,7 +14,7 @@ public class Figurine : MonoBehaviour, IJsonable
 
     private void Start()
     {
-        //InstantiateFigurine("http://www.google.fr/url?source=imglanding&ct=img&q=http://mywastedlife.com/CAH/img/back-white.png&sa=X&ved=0CAkQ8wdqFQoTCIOlwO7IhcYCFQFYFAodYnoAUg&usg=AFQjCNGdlrUGLinNrm18KedLAfCNPW3x6w");
+        Instantiate("http://www.berserk-games.com/images/TTS-Coin-Template.png", "http://pastebin.com/raw.php?i=00YWZ28Y");
     }
 
     public void Instantiate(JSONNode json)
@@ -23,9 +23,8 @@ public class Figurine : MonoBehaviour, IJsonable
         InstantiateFigurine();
     }
 
-    public void Instantiate(string figurineTexUrl, string meshURL, JSONNode json)
+    public void Instantiate(string figurineTexUrl, string meshURL)
     {
-        fromJson(json);
         figurineTextureUrl = figurineTexUrl;
         meshUrl = meshURL;
         wwwcontroller = GameObject.Find("SceneScripts").GetComponent<WWWController>();
@@ -40,7 +39,14 @@ public class Figurine : MonoBehaviour, IJsonable
 
     private void WrapFigurine(Texture2D texture, Mesh mesh)
     {
-        //
+        transform.GetComponent<MeshRenderer>().material.mainTexture = texture;
+        transform.GetComponent<MeshFilter>().mesh = mesh;
+        transform.gameObject.AddComponent<MeshCollider>();
+        transform.GetComponent<MeshCollider>().convex = true;
+        transform.gameObject.AddComponent<Rigidbody>();
+        transform.GetComponent<Rigidbody>().isKinematic = false;
+        transform.GetComponent<Rigidbody>().collisionDetectionMode = CollisionDetectionMode.Continuous;
+        transform.gameObject.tag = "Figurine";
     }
 
     public void fromJson(JSONNode json)
@@ -58,5 +64,11 @@ public class Figurine : MonoBehaviour, IJsonable
         json.Add("mesh", new JSONString(meshUrl));
 
         return json;
+    }
+
+    public void DealToPlayer(Utility.ClientColor color)
+    {
+        HostScript currentHost = GameObject.Find("NetworkHost").GetComponent<HostScript>();
+        currentHost.sendToClient(color, this, "figurine");
     }
 }

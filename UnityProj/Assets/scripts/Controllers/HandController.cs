@@ -128,16 +128,16 @@ public class HandController : MonoBehaviour
         handObjects.Add(cardTrans);
     }
 
-    public void addBanana(JSONNode jsonBanana)
+    public void addFigurine(JSONNode jsonFigurine)
     {
-        Transform bananaTrans = Instantiate(figurinePrefab);
-        bananaTrans.gameObject.AddComponent<Rigidbody>();
-        bananaTrans.GetComponent<Rigidbody>().isKinematic = true;
-        bananaTrans.gameObject.AddComponent<Figurine>();
-        Figurine figurine = bananaTrans.GetComponent<Figurine>();
-        bananaTrans.position = new Vector3(handObjects.Count * 7.5f, 0, 0);
-        figurine.Instantiate(jsonBanana);
-        handObjects.Add(bananaTrans);
+        Transform figurineTrans = Instantiate(figurinePrefab);
+        figurineTrans.gameObject.AddComponent<Rigidbody>();
+        figurineTrans.GetComponent<Rigidbody>().isKinematic = true;
+        figurineTrans.gameObject.AddComponent<Figurine>();
+        Figurine figurine = figurineTrans.GetComponent<Figurine>();
+        figurineTrans.position = new Vector3(handObjects.Count * 7.5f, 0, 0);
+        figurine.Instantiate(jsonFigurine);
+        handObjects.Add(figurineTrans);
         
     }
 
