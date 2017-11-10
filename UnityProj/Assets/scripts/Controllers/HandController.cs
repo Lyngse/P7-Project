@@ -130,7 +130,7 @@ public class HandController : MonoBehaviour
 
     public void addFigurine(JSONNode jsonFigurine)
     {
-        Transform figurineTrans = Instantiate(figurinePrefab);
+        Transform figurineTrans = Instantiate(figurinePrefab).GetChild(0).transform;
         figurineTrans.gameObject.AddComponent<Rigidbody>();
         figurineTrans.GetComponent<Rigidbody>().isKinematic = true;
         figurineTrans.gameObject.AddComponent<Figurine>();
