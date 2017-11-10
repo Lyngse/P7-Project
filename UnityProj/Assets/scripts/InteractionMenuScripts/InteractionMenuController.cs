@@ -54,7 +54,7 @@ public class InteractionMenuController : MonoBehaviour {
                         RollDie rollDie = currentMenu.canvas.transform.GetChild(0).GetChild(3).GetComponent<RollDie>();
                         rollDie.dieTransform = currentTransform;
                     }
-                    else if(currentTransform.tag == "Card")
+                    else if(currentTransform.tag == "Card" || currentTransform.tag == "Figurine")
                     {
                         currentMenu.canvas.transform.GetChild(0).GetChild(8).gameObject.SetActive(true);
                         ShowColors showColors = currentMenu.canvas.transform.GetChild(0).GetChild(8).GetComponent<ShowColors>();
