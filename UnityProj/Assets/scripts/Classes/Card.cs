@@ -45,7 +45,7 @@ public class Card : MonoBehaviour, IJsonable
         }));
         if (!isFaceDown)
         {
-            transform.position = new Vector3(transform.position.x, 0.5f, transform.position.z);
+            transform.Rotate(transform.rotation.x + 180.0f, 0, 0);
         }
     }
 
