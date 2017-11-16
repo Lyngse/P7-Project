@@ -11,7 +11,6 @@ public class Deck : MonoBehaviour {
     private string deckSourceUrl = "http://i.imgur.com/hgumn3h.jpg";
     private string cardBackUrl = "http://www.google.fr/url?source=imglanding&ct=img&q=http://mywastedlife.com/CAH/img/back-white.png&sa=X&ved=0CAkQ8wdqFQoTCIOlwO7IhcYCFQFYFAodYnoAUg&usg=AFQjCNGdlrUGLinNrm18KedLAfCNPW3x6w";
     public bool isFaceDown = true;
-    private int id;
     WWWController wwwcontroller;
 
     private void Start()
@@ -27,7 +26,7 @@ public class Deck : MonoBehaviour {
         _cards = new List<int>(Enumerable.Range(0, 69));
         _dealtCards = new List<int>();
         wwwcontroller = GameObject.Find("SceneScripts").GetComponent<WWWController>();
-        id = wwwcontroller.CreateDeck(frontUrl, backUrl, x => ImageForDeck(x.Second));
+        StartCoroutine(wwwcontroller.getDeck(frontUrl, backUrl, x => ImageForDeck(x.Second)));
     }
 
     //public void InstantiateDecks(string frontUrl, string backUrl)
@@ -118,18 +117,29 @@ public class Deck : MonoBehaviour {
 
     public void DealToPlayer(Utility.ClientColor color)
     {
-        if (this.isFaceDown)
+        if(_cards.Count > 0)
         {
-            //Send the first card of the list to the given player's hand
-            //Card card = _cards[0].GetComponent<Card>();
-            //HostScript currentHost = GameObject.Find("NetworkHost").GetComponent<HostScript>();
-            //currentHost.sendToClient(color, card, "card");
-            //_dealtCards.Add(_cards[0]);
-            //_cards.Remove(_cards[0]);
-        }
-        else
-        {
-            //Send the last card of the list to the given player's hand
+            int cardID;
+            if (this.isFaceDown)
+            {
+                //Send the first card of the list to the given player's hand
+                //Card card = _cards[0].GetComponent<Card>();
+                //HostScript currentHost = GameObject.Find("NetworkHost").GetComponent<HostScript>();
+                //currentHost.sendToClient(color, card, "card");
+                //_dealtCards.Add(_cards[0]);
+                //_cards.Remove(_cards[0]);
+                cardID = _cards[0];
+            }
+            else
+            {
+                //Send the last card of the list to the given player's hand
+                cardID = _cards[_cards.Count - 1];
+            }
+            Card card = new Card();
+            card.Instantiate(cardID, deckSourceUrl, cardBackUrl, true);
+            HostScript currentHost = GameObject.Find("NetworkHost").GetComponent<HostScript>();
+            currentHost.sendToClient(color, card, "card");
+            ChangeHeight();
         }
     }
 
@@ -165,10 +175,17 @@ public class Deck : MonoBehaviour {
                 _dealtCards.Add(_cards[_cards.Count - 1]);
                 _cards.Remove(_cards[_cards.Count - 1]);
             }
-            newCard.GetComponent<Card>().Instantiate(id, cardID, deckSourceUrl, cardBackUrl, true);
+            newCard.GetComponent<Card>().Instantiate(cardID, deckSourceUrl, cardBackUrl, true);
             newCard.position = new Vector3((transform.position.x + 7), 5, transform.position.z);
             newCard.gameObject.SetActive(true);
-            
+            ChangeHeight();
         }
-    }    
+    }
+
+    //Not sure if this will work by scaling the deck.
+    private void ChangeHeight()
+    {
+        RectTransform rectTransform = GetComponent<RectTransform>();
+        rectTransform.localScale = new Vector3(0, rectTransform.localScale.y - (rectTransform.localScale.y / _cards.Count), 0);
+    }
 }

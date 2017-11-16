@@ -80,6 +80,7 @@ class ClientScript : NetworkScript
         myColor = Utility.ClientColor.none;
         connectCanvas.gameObject.SetActive(true);
         gameCanvas.gameObject.SetActive(false);
+        handController.ClearHand();
         colorText.text = "";
         colorText.color = Utility.colors[0];
         codeInput.text = "";

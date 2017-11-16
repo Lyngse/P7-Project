@@ -61,10 +61,7 @@ class HostScript : NetworkScript
                 var cardPrefab = Resources.Load<Transform>("Prefabs/Card");
                 Transform newCard = Instantiate(cardPrefab);
                 newCard.GetComponent<Card>().Instantiate(package);
-                newCard.position = new Vector3((transform.position.x + 7), 5, transform.position.z);
-                newCard.gameObject.SetActive(true);
                 clientColors[color].Remove(newCard.GetComponent<Card>());
-                Debug.Log("Card received from: " + color.ToString());
                 break;
             case "figurine":
 
@@ -80,7 +77,6 @@ class HostScript : NetworkScript
         var wbm = new WebSocketMessage(options, package);
         var json = wbm.toJson();
         clientColors[clientColor].Add(package);
-        Debug.Log("Card sent to: " + clientColor.ToString());
         webSocket.Send(json.ToString());
     }
 

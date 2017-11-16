@@ -8,61 +8,64 @@ using Assets.scripts;
 
 public class WWWController: MonoBehaviour
 {
-    Dictionary<int, Tuple<Texture2D, Texture2D>> deckDict = new Dictionary<int, Tuple<Texture2D, Texture2D>>();
-    Dictionary<int, Tuple<Texture2D, Mesh>> figurineDict = new Dictionary<int, Tuple<Texture2D, Mesh>>();
-    int nextDeckID = 0;
-    int nextFigurineID = 0;
+    Dictionary<string, Tuple<Texture2D, Texture2D>> deckDict = new Dictionary<string, Tuple<Texture2D, Texture2D>>();
+    Dictionary<string, Tuple<Texture2D, Mesh>> figurineDict = new Dictionary<string, Tuple<Texture2D, Mesh>>();
 
-    public int CreateFigurine(string figurineUrl, string meshUrl, Action<Tuple<Texture2D, Mesh>> callback)
+    public IEnumerator GetFigurine(string figurineUrl, string meshUrl, Action<Tuple<Texture2D, Mesh>> callback)
     {
-        int id = nextFigurineID;
-        nextFigurineID++;
-        StartCoroutine(GetFigurine(id, figurineUrl, meshUrl, callback));
-        return id;
-    }
-
-    public IEnumerator GetFigurine(int id, string figurineUrl, string meshUrl, Action<Tuple<Texture2D, Mesh>> callback)
-    {
-        WWW figurineWWW = new WWW(figurineUrl);
-        WWW meshWWW = new WWW(meshUrl);
-        yield return figurineWWW;
-        yield return meshWWW;
-        ObjImporter importer = new ObjImporter();
-        Mesh mesh = importer.ImportFile(meshWWW.text);
-        figurineDict.Add(id, new Tuple<Texture2D, Mesh>(figurineWWW.texture, mesh));
-        callback(figurineDict[id]);
-    }
-
-    public int CreateDeck(string frontUrl, string backUrl, Action<Tuple<Texture2D, Texture2D>> callback)
-    {
-        int id = nextDeckID;
-        nextDeckID++;
-        StartCoroutine(getDeck(id, frontUrl, backUrl, callback));
-        return id;
-    }
-
-    public IEnumerator getDeck(int id, string frontUrl, string backUrl, Action<Tuple<Texture2D, Texture2D>> callback)
-    {
-        WWW frontWWW = new WWW(frontUrl);
-        WWW backWWW = new WWW(backUrl);
-        yield return frontWWW;
-        yield return backWWW;
-        deckDict.Add(id, new Tuple<Texture2D, Texture2D>(frontWWW.texture, backWWW.texture));
-        callback(deckDict[id]);
-    }
-
-    public void GetCard(int cardID, int deckID, string frontUrl, string backUrl, Action<Tuple<Texture2D, Texture2D>> callback)
-    {
-        if (deckDict.ContainsKey(deckID))
+        string identifier = figurineUrl + meshUrl;
+        Tuple<Texture2D, Mesh> result;
+        if (figurineDict.ContainsKey(identifier))
         {
-            Tuple<Texture2D, Texture2D> deckTextures = deckDict[deckID];            
+            result = figurineDict[identifier];            
+        } else
+        {
+            WWW figurineWWW = new WWW(figurineUrl);
+            WWW meshWWW = new WWW(meshUrl);
+            yield return figurineWWW;
+            yield return meshWWW;
+            ObjImporter importer = new ObjImporter();
+            Mesh mesh = importer.ImportFile(meshWWW.text);
+            mesh.RecalculateNormals();
+            result = new Tuple<Texture2D, Mesh>(figurineWWW.texture, mesh);
+            figurineDict.Add(identifier, result);
+        }
+        callback(result);
+    }
+
+    public IEnumerator getDeck(string frontUrl, string backUrl, Action<Tuple<Texture2D, Texture2D>> callback)
+    {
+        string identifier = frontUrl + backUrl;
+        Tuple<Texture2D, Texture2D> result;
+        if (deckDict.ContainsKey(identifier))
+        {
+            result = deckDict[identifier];
+        }
+        else
+        {
+            WWW frontWWW = new WWW(frontUrl);
+            WWW backWWW = new WWW(backUrl);
+            yield return frontWWW;
+            yield return backWWW;
+            result = new Tuple<Texture2D, Texture2D>(frontWWW.texture, backWWW.texture);
+            deckDict.Add(identifier, result);
+        }        
+        callback(result);
+    }
+
+    public void GetCard(int cardID, string frontUrl, string backUrl, Action<Tuple<Texture2D, Texture2D>> callback)
+    {
+        string identifier = frontUrl + backUrl;
+        if (deckDict.ContainsKey(identifier))
+        {
+            Tuple<Texture2D, Texture2D> deckTextures = deckDict[identifier];            
             var frontTex = CropImageToCard(deckTextures.First, cardID);
             var backTex = deckTextures.Second;
 
             callback(new Tuple<Texture2D, Texture2D>(frontTex, backTex));
         } else
         {
-            StartCoroutine(getDeck(deckID, frontUrl, backUrl, (deckTextures => {
+            StartCoroutine(getDeck(frontUrl, backUrl, (deckTextures => {
                 var frontTex = CropImageToCard(deckTextures.First, cardID);
                 var backTex = deckTextures.Second;
                 callback(new Tuple<Texture2D, Texture2D>(frontTex, backTex));

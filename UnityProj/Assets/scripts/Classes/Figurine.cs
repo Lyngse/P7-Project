@@ -28,19 +28,23 @@ public class Figurine : MonoBehaviour, IJsonable
         figurineTextureUrl = figurineTexUrl;
         meshUrl = meshURL;
         wwwcontroller = GameObject.Find("SceneScripts").GetComponent<WWWController>();
-        id = wwwcontroller.CreateFigurine(figurineTextureUrl, meshUrl, x => WrapFigurine(x.First, x.Second));
+        StartCoroutine(wwwcontroller.GetFigurine(figurineTextureUrl, meshUrl, x => WrapFigurine(x.First, x.Second)));
     }
 
     public void InstantiateFigurine()
     {
         wwwcontroller = GameObject.Find("SceneScripts").GetComponent<WWWController>();
-        id = wwwcontroller.CreateFigurine(figurineTextureUrl, meshUrl, x => WrapFigurine(x.First, x.Second));
+        StartCoroutine(wwwcontroller.GetFigurine(figurineTextureUrl, meshUrl, x => WrapFigurine(x.First, x.Second)));
     }
 
     private void WrapFigurine(Texture2D texture, Mesh mesh)
     {
         transform.GetComponent<MeshRenderer>().material.mainTexture = texture;
-        transform.GetComponent<MeshFilter>().mesh = mesh;        
+        transform.GetComponent<MeshFilter>().mesh = mesh;
+        transform.GetComponent<MeshCollider>().sharedMesh = mesh;  
+        var scale = transform.localScale;
+        scale.x = -scale.x;
+        transform.localScale = scale;
         transform.gameObject.tag = "Figurine";
     }
 
