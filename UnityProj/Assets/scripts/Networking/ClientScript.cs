@@ -106,9 +106,15 @@ class ClientScript : NetworkScript
 
     public void sendToHost(IJsonable package, string packageType)
     {
-        var options = new MessageOptions("client_to_host", code, packageType: packageType);
+        var options = new MessageOptions("client_to_host", code, myColor, packageType);
         var wbm = new WebSocketMessage(options, package);
         var json = wbm.toJson();
         webSocket.Send(json.ToString());
+    }
+
+    public void changeColor(Utility.ClientColor newColor)
+    {
+        var options = new MessageOptions("color_change", code);
+        
     }
 }
