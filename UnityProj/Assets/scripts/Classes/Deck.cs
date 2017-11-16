@@ -186,6 +186,6 @@ public class Deck : MonoBehaviour {
     private void ChangeHeight()
     {
         RectTransform rectTransform = GetComponent<RectTransform>();
-        rectTransform.localScale = new Vector3(0, rectTransform.localScale.y - (rectTransform.localScale.y / _cards.Count), 0);
+        rectTransform.localScale = new Vector3(rectTransform.localScale.x, rectTransform.localScale.y - (rectTransform.localScale.y / _cards.Count), rectTransform.localScale.y);
     }
 }
