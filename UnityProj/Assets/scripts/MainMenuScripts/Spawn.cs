@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 public class Spawn : MonoBehaviour, IPointerUpHandler
 {
     private GameObject prefab;
-    private Vector3 startingPosition = new Vector3(0, 5, 0);
+    private Vector3 startingPosition = new Vector3(0, 1, 0);
 
     public virtual void OnPointerUp(PointerEventData ped)
     {
