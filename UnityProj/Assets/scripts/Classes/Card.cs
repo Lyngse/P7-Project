@@ -13,7 +13,7 @@ public class Card : MonoBehaviour, IJsonable
     public string backImgUrl;
     public int id;
     int deckId;
-    bool isFaceDown;
+    public bool isFaceDown;
     WWWController wwwController;
 
     public void Instantiate(int deckId, int id, string frontImgUrl, string backImgUrl, bool isFaceDown = true)
@@ -42,7 +42,11 @@ public class Card : MonoBehaviour, IJsonable
         {
             transform.GetChild(0).GetComponent<MeshRenderer>().material.mainTexture = textures.First;
             transform.GetChild(1).GetComponent<MeshRenderer>().material.mainTexture = textures.Second;
-        }));        
+        }));
+        if (!isFaceDown)
+        {
+            transform.position = new Vector3(transform.position.x, 0.5f, transform.position.z);
+        }
     }
 
     public void fromJson(JSONNode json)

@@ -100,7 +100,7 @@ public class HandController : MonoBehaviour
         }
     }
 
-    public void playObject()
+    public void playObject(bool isFaceDown)
     {
         if(selectedObj != null)
         {
@@ -108,6 +108,7 @@ public class HandController : MonoBehaviour
             {
                 case "Card":
                     Card card = selectedObj.GetComponent<Card>();
+                    card.isFaceDown = isFaceDown;
                     clientScript.sendToHost(card, "card");
                     handObjects.Remove(selectedObj);
                     Destroy(selectedObj.gameObject);
