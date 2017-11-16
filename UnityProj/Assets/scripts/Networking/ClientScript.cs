@@ -4,19 +4,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using WebSocketSharp;
 
 class ClientScript : NetworkScript
 {
-    public Button connectButton;
-    public InputField codeInput;
+    public Canvas connectCanvas;
+    public Canvas gameCanvas;
+    public HandController handController;
+    Button connectButton;
+    InputField codeInput;
+    Text colorText;
     Utility.ClientColor myColor = Utility.ClientColor.none;
 
     protected override void Start()
     {
         base.Start();
+        codeInput = connectCanvas.GetComponentInChildren<InputField>();
+        connectButton = connectCanvas.GetComponentInChildren<Button>();
         connectButton.onClick.AddListener(clientConnect);
+        colorText = gameCanvas.GetComponentsInChildren<Text>().First(text => text.name == "colorText");
     }
 
     void clientConnect()
@@ -33,6 +41,14 @@ class ClientScript : NetworkScript
         connectButton.interactable = true;
     }
 
+    protected override void onClose()
+    {
+        Debug.Log("Connection lost!");
+        resetValues();
+        connectButton.interactable = false;
+        SceneManager.LoadScene("MenuScene", LoadSceneMode.Single);
+    }
+
     protected override void onMessage(string data)
     {
         Debug.Log(data);
@@ -45,10 +61,29 @@ class ClientScript : NetworkScript
                 break;
             case "color_change":
                 myColor = options.color;
+                connectCanvas.gameObject.SetActive(false);
+                gameCanvas.gameObject.SetActive(true);
+                colorText.text = myColor.ToString();
+                colorText.color = Utility.colors[(int)myColor];
+                break;
+            case "host_disconnected":
+                Debug.Log("host disconnected");
+                resetValues();
                 break;
             default:
                 break;
         }
+    }
+
+    void resetValues()
+    {
+        myColor = Utility.ClientColor.none;
+        connectCanvas.gameObject.SetActive(true);
+        gameCanvas.gameObject.SetActive(false);
+        handController.ClearHand();
+        colorText.text = "";
+        colorText.color = Utility.colors[0];
+        codeInput.text = "";
     }
 
     void handlePackage(string type, JSONNode package)
@@ -59,14 +94,29 @@ class ClientScript : NetworkScript
                 var stringPackage = new StringPackage(package);
                 Debug.Log(stringPackage.package);
                 break;
+            case "card":
+                handController.addCard(package);
+                break;
+            case "figurine":
+                handController.addFigurine(package);
+                break;
             default:
                 break;
         }
     }
 
-    void sendToHost(IJsonable package, string packageType)
+    public void sendToHost(IJsonable package, string packageType)
     {
-        var options = new MessageOptions("client_to_host", code, packageType: packageType);
+        var options = new MessageOptions("client_to_host", code, myColor, packageType);
+        var wbm = new WebSocketMessage(options, package);
+        var json = wbm.toJson();
+        webSocket.Send(json.ToString());
+    }
+
+    public void changeColor(Utility.ClientColor newColor)
+    {
+        var options = new MessageOptions("color_change", code);
+        var package = new ColorChangePackage(myColor, newColor);
         var wbm = new WebSocketMessage(options, package);
         var json = wbm.toJson();
         webSocket.Send(json.ToString());

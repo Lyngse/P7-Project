@@ -12,24 +12,24 @@ public class objectTestScript : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-	    var mymeshfilter = GetComponent<MeshFilter>();
-	    var objImporter = new ObjImporter();
-	    mymeshfilter.mesh = objImporter.ImportFile("C:\\Users\\Andreas Smed\\Documents\\GitHub\\P7-Project\\UnityProj\\coin.obj");
-	    //mymeshfilter.mesh.triangles = mymeshfilter.mesh.triangles.Reverse().ToArray();
-        mymeshfilter.mesh.RecalculateNormals();
-        mymeshfilter.mesh.RecalculateTangents();
-
-
-        var renderer = GetComponent<MeshRenderer>();
-	    var texture = Resources.Load<Texture2D>("coin");
-	    
-        var bytes = System.IO.File.ReadAllBytes("C:\\Users\\Andreas Smed\\Documents\\GitHub\\P7-Project\\UnityProj\\Assets\\Resources\\coin.png");
-        var newTexture = new Texture2D(280,672, TextureFormat.DXT1,false);
-	    newTexture.LoadImage(bytes);
-        
-
-	    renderer.material.mainTexture = texture;
-	    var realMesh = realCoin.GetComponent<MeshFilter>().mesh;
+	    //var mymeshfilter = GetComponent<MeshFilter>();
+	    //var objImporter = new ObjImporter();
+	    //mymeshfilter.mesh = objImporter.ImportFile("C:\\Users\\Andreas Smed\\Documents\\GitHub\\P7-Project\\UnityProj\\coin.obj");
+	    ////mymeshfilter.mesh.triangles = mymeshfilter.mesh.triangles.Reverse().ToArray();
+        //mymeshfilter.mesh.RecalculateNormals();
+        //mymeshfilter.mesh.RecalculateTangents();
+        //
+        //
+        //var renderer = GetComponent<MeshRenderer>();
+	    //var texture = Resources.Load<Texture2D>("coin");
+	    //
+        //var bytes = System.IO.File.ReadAllBytes("C:\\Users\\Andreas Smed\\Documents\\GitHub\\P7-Project\\UnityProj\\Assets\\Resources\\coin.png");
+        //var newTexture = new Texture2D(280,672, TextureFormat.DXT1,false);
+	    //newTexture.LoadImage(bytes);
+        //
+        //
+	    //renderer.material.mainTexture = texture;
+	    //var realMesh = realCoin.GetComponent<MeshFilter>().mesh;
 	}
 
     Texture2D FlipTexture(Texture2D original)

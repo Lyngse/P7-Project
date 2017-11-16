@@ -11,7 +11,7 @@ class HostScript : NetworkScript
 {
 
     public InputField codeField;
-    List<Utility.ClientColor> clientColors = new List<Utility.ClientColor>();
+    public Dictionary<Utility.ClientColor, List<IJsonable>> clientColors = new Dictionary<Utility.ClientColor, List<IJsonable>>();
 
     protected override void onOpen()
     {
@@ -19,6 +19,11 @@ class HostScript : NetworkScript
         var message = new WebSocketMessage(options);
         var json = message.toJson();
         webSocket.Send(json.ToString());
+    }
+
+    protected override void onClose()
+    {
+        Debug.Log("Connection Lost!");
     }
 
     protected override void onMessage(string data)
@@ -33,23 +38,49 @@ class HostScript : NetworkScript
                 codeField.text = code;
                 break;
             case "client_joined":
-                clientColors.Add(options.color);
+                clientColors.Add(options.color, new List<IJsonable>());
                 sendToClient(options.color, new StringPackage(options.color.ToString()), "string");
+                break;
+            case "client_disconnected":
+                Debug.Log("Client Disconnected: " + options.color.ToString());
+                clientColors.Remove(options.color);
+                break;
+            case "package_from_client":
+                HandleClientPackage(options.packageType, message["package"], options.color);
                 break;
             default:
                 break;
         }
     }
 
-    void sendToClient(Utility.ClientColor clientColor, IJsonable package, string packageType)
+    private void HandleClientPackage(string type, JSONNode package, Utility.ClientColor color)
+    {
+        switch (type)
+        {
+            case "card":
+                var cardPrefab = Resources.Load<Transform>("Prefabs/Card");
+                Transform newCard = Instantiate(cardPrefab);
+                newCard.GetComponent<Card>().Instantiate(package);
+                clientColors[color].Remove(newCard.GetComponent<Card>());
+                break;
+            case "figurine":
+
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void sendToClient(Utility.ClientColor clientColor, IJsonable package, string packageType)
     {
         var options = new MessageOptions("host_to_client", code, clientColor, packageType);
         var wbm = new WebSocketMessage(options, package);
         var json = wbm.toJson();
+        clientColors[clientColor].Add(package);
         webSocket.Send(json.ToString());
     }
 
-    void sendToAll(IJsonable message)
+    public void sendToAll(IJsonable message)
     {
         throw new NotImplementedException();
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Assets.scripts.Classes;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class TouchManagement : MonoBehaviour {
     private Touch[] touches;
@@ -12,12 +13,12 @@ public class TouchManagement : MonoBehaviour {
     private Camera cam;
     private GrabObject grabObject = new GrabObject();
     private InteractionMenuController imc = new InteractionMenuController();
+    public Transform cardPrefab;
 
 
     private void Start()
     {
         this.cam = Camera.main;
-        
     }
 
 

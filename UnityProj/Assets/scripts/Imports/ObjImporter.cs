@@ -24,7 +24,7 @@ public class ObjImporter
         public int[] faceUVs;
         public Vector3[] faceData;
         public string name;
-        public string fileName;
+        public string text;
     }
 
     // Use this for initialization
@@ -64,7 +64,7 @@ public class ObjImporter
         return mesh;
     }
 
-    private static meshStruct createMeshStruct(string filename)
+    private static meshStruct createMeshStruct(string text)
     {
         int triangles = 0;
         int vertices = 0;
@@ -72,11 +72,8 @@ public class ObjImporter
         int vn = 0;
         int face = 0;
         meshStruct mesh = new meshStruct();
-        mesh.fileName = filename;
-        StreamReader stream = File.OpenText(filename);
-        string entireText = stream.ReadToEnd();
-        stream.Close();
-        using (StringReader reader = new StringReader(entireText))
+        mesh.text = text;
+        using (StringReader reader = new StringReader(mesh.text))
         {
             string currentText = reader.ReadLine();
             char[] splitIdentifier = { ' ' };
@@ -132,10 +129,7 @@ public class ObjImporter
 
     private static void populateMeshStruct(ref meshStruct mesh)
     {
-        StreamReader stream = File.OpenText(mesh.fileName);
-        string entireText = stream.ReadToEnd();
-        stream.Close();
-        using (StringReader reader = new StringReader(entireText))
+        using (StringReader reader = new StringReader(mesh.text))
         {
             string currentText = reader.ReadLine();
 
