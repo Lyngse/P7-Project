@@ -11,7 +11,7 @@ class HostScript : NetworkScript
 {
 
     public InputField codeField;
-    public List<Utility.ClientColor> clientColors = new List<Utility.ClientColor>();
+    public Dictionary<Utility.ClientColor, List<IJsonable>> clientColors = new Dictionary<Utility.ClientColor, List<IJsonable>>();
 
     protected override void onOpen()
     {
@@ -38,7 +38,7 @@ class HostScript : NetworkScript
                 codeField.text = code;
                 break;
             case "client_joined":
-                clientColors.Add(options.color);
+                clientColors.Add(options.color, new List<IJsonable>());
                 sendToClient(options.color, new StringPackage(options.color.ToString()), "string");
                 break;
             case "client_disconnected":
@@ -46,14 +46,14 @@ class HostScript : NetworkScript
                 clientColors.Remove(options.color);
                 break;
             case "package_from_client":
-                HandleClientPackage(options.packageType, message["package"]);
+                HandleClientPackage(options.packageType, message["package"], options.color);
                 break;
             default:
                 break;
         }
     }
 
-    private void HandleClientPackage(string type, JSONNode package)
+    private void HandleClientPackage(string type, JSONNode package, Utility.ClientColor color)
     {
         switch (type)
         {
@@ -63,6 +63,8 @@ class HostScript : NetworkScript
                 newCard.GetComponent<Card>().Instantiate(package);
                 newCard.position = new Vector3((transform.position.x + 7), 5, transform.position.z);
                 newCard.gameObject.SetActive(true);
+                clientColors[color].Remove(newCard.GetComponent<Card>());
+                Debug.Log("Card received from: " + color.ToString());
                 break;
             case "figurine":
 
@@ -77,6 +79,8 @@ class HostScript : NetworkScript
         var options = new MessageOptions("host_to_client", code, clientColor, packageType);
         var wbm = new WebSocketMessage(options, package);
         var json = wbm.toJson();
+        clientColors[clientColor].Add(package);
+        Debug.Log("Card sent to: " + clientColor.ToString());
         webSocket.Send(json.ToString());
     }
 

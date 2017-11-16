@@ -45,16 +45,17 @@ public class ShowColors : MonoBehaviour, IPointerUpHandler
         //currentHost.clientColors.Add(Utility.ClientColor.white);
         //currentHost.clientColors.Add(Utility.ClientColor.yellow);
 
-
-        for (int i = 0; i < currentHost.clientColors.Count; i++)
+        int i = 0;
+        foreach (var key in currentHost.clientColors.Keys)
         {
             Button newBtn = Instantiate(Resources.Load<Button>("ColorPickButtonPrefab")) as Button;
             newBtn.transform.parent = colorPicker.transform;
             newBtn.transform.position = colorPicker.transform.position + positions[i];
-            newBtn.image.color = Utility.colors[(int)currentHost.clientColors[i]];
-            newBtn.GetComponent<DealToPlayer>().color = currentHost.clientColors[i];
+            newBtn.image.color = Utility.colors[(int)key];
+            newBtn.GetComponent<DealToPlayer>().color = key;
             newBtn.GetComponent<DealToPlayer>().currentTransform = cardTransform;
             newBtn.GetComponent<DealToPlayer>().menu = menu;
+            i++;
         }
 
     }
