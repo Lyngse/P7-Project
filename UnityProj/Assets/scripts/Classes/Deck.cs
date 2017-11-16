@@ -11,7 +11,6 @@ public class Deck : MonoBehaviour {
     private string deckSourceUrl = "http://i.imgur.com/hgumn3h.jpg";
     private string cardBackUrl = "http://www.google.fr/url?source=imglanding&ct=img&q=http://mywastedlife.com/CAH/img/back-white.png&sa=X&ved=0CAkQ8wdqFQoTCIOlwO7IhcYCFQFYFAodYnoAUg&usg=AFQjCNGdlrUGLinNrm18KedLAfCNPW3x6w";
     public bool isFaceDown = true;
-    private int id;
     WWWController wwwcontroller;
 
     private void Start()
@@ -137,7 +136,7 @@ public class Deck : MonoBehaviour {
                 cardID = _cards[_cards.Count - 1];
             }
             Card card = new Card();
-            card.Instantiate(id, cardID, deckSourceUrl, cardBackUrl, true);
+            card.Instantiate(cardID, deckSourceUrl, cardBackUrl, true);
             HostScript currentHost = GameObject.Find("NetworkHost").GetComponent<HostScript>();
             currentHost.sendToClient(color, card, "card");
             ChangeHeight();
@@ -176,7 +175,7 @@ public class Deck : MonoBehaviour {
                 _dealtCards.Add(_cards[_cards.Count - 1]);
                 _cards.Remove(_cards[_cards.Count - 1]);
             }
-            newCard.GetComponent<Card>().Instantiate(id, cardID, deckSourceUrl, cardBackUrl, true);
+            newCard.GetComponent<Card>().Instantiate(cardID, deckSourceUrl, cardBackUrl, true);
             newCard.position = new Vector3((transform.position.x + 7), 5, transform.position.z);
             newCard.gameObject.SetActive(true);
             ChangeHeight();
