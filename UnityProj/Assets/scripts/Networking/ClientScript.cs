@@ -115,6 +115,9 @@ class ClientScript : NetworkScript
     public void changeColor(Utility.ClientColor newColor)
     {
         var options = new MessageOptions("color_change", code);
-        
+        var package = new ColorChangePackage(myColor, newColor);
+        var wbm = new WebSocketMessage(options, package);
+        var json = wbm.toJson();
+        webSocket.Send(json.ToString());
     }
 }

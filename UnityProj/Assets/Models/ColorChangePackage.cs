@@ -22,11 +22,15 @@ class ColorChangePackage : IJsonable
 
     public void fromJson(JSONNode json)
     {
-        
+        fromColor = (Utility.ClientColor)json["fromColor"].AsInt;
+        toColor = (Utility.ClientColor)json["toColor"].AsInt;
     }
 
     public JSONNode toJson()
     {
-        throw new NotImplementedException();
+        var json = new JSONObject();
+        json.Add("fromColor", new JSONNumber((int)fromColor));
+        json.Add("fromColor", new JSONNumber((int)fromColor));
+        return json;
     }
 }
