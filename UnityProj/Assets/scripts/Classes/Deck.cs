@@ -118,18 +118,28 @@ public class Deck : MonoBehaviour {
 
     public void DealToPlayer(Utility.ClientColor color)
     {
-        if (this.isFaceDown)
+        if(_cards.Count > 0)
         {
-            //Send the first card of the list to the given player's hand
-            //Card card = _cards[0].GetComponent<Card>();
-            //HostScript currentHost = GameObject.Find("NetworkHost").GetComponent<HostScript>();
-            //currentHost.sendToClient(color, card, "card");
-            //_dealtCards.Add(_cards[0]);
-            //_cards.Remove(_cards[0]);
-        }
-        else
-        {
-            //Send the last card of the list to the given player's hand
+            int cardID;
+            if (this.isFaceDown)
+            {
+                //Send the first card of the list to the given player's hand
+                //Card card = _cards[0].GetComponent<Card>();
+                //HostScript currentHost = GameObject.Find("NetworkHost").GetComponent<HostScript>();
+                //currentHost.sendToClient(color, card, "card");
+                //_dealtCards.Add(_cards[0]);
+                //_cards.Remove(_cards[0]);
+                cardID = _cards[0];
+            }
+            else
+            {
+                //Send the last card of the list to the given player's hand
+                cardID = _cards[_cards.Count - 1];
+            }
+            Card card = new Card();
+            card.Instantiate(id, cardID, deckSourceUrl, cardBackUrl, true);
+            HostScript currentHost = GameObject.Find("NetworkHost").GetComponent<HostScript>();
+            currentHost.sendToClient(color, card, "card");
         }
     }
 
