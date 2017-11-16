@@ -140,6 +140,7 @@ public class Deck : MonoBehaviour {
             card.Instantiate(id, cardID, deckSourceUrl, cardBackUrl, true);
             HostScript currentHost = GameObject.Find("NetworkHost").GetComponent<HostScript>();
             currentHost.sendToClient(color, card, "card");
+            ChangeHeight();
         }
     }
 
@@ -178,7 +179,14 @@ public class Deck : MonoBehaviour {
             newCard.GetComponent<Card>().Instantiate(id, cardID, deckSourceUrl, cardBackUrl, true);
             newCard.position = new Vector3((transform.position.x + 7), 5, transform.position.z);
             newCard.gameObject.SetActive(true);
-            
+            ChangeHeight();
         }
-    }    
+    }
+
+    //Not sure if this will work by scaling the deck.
+    private void ChangeHeight()
+    {
+        RectTransform rectTransform = GetComponent<RectTransform>();
+        rectTransform.localScale = new Vector3(0, rectTransform.localScale.y - (rectTransform.localScale.y / _cards.Count), 0);
+    }
 }
