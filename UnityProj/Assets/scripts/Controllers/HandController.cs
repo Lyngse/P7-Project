@@ -124,6 +124,7 @@ public class HandController : MonoBehaviour
         Transform cardTrans = Instantiate(cardPrefab);
         cardTrans.GetComponent<Rigidbody>().isKinematic = true;
         cardTrans.position = new Vector3(handObjects.Count * 7.5f, 0, 0);
+        cardTrans.Rotate(180, 0, 0);
         Card card = cardTrans.GetComponent<Card>();
         card.Instantiate(jsonCard);
         handObjects.Add(cardTrans);
@@ -147,6 +148,15 @@ public class HandController : MonoBehaviour
         handObjects.Add(obj);
         obj.transform.parent = GameObject.Find("HandController").transform;
         obj.transform.position = new Vector3((handObjects.Count - 1 * 7.5f), 0, 0);
+    }
+
+    public void ClearHand()
+    {
+        foreach (var obj in handObjects)
+        {
+            Destroy(obj.gameObject);
+        }
+        handObjects = new List<Transform>();
     }
 
     private Vector3 screenToPlane(Vector3 screenPoint)
