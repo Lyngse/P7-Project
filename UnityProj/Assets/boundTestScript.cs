@@ -15,8 +15,8 @@ public class boundTestScript : MonoBehaviour
 
     public string DetectSmallestAxis(GameObject gameObjectToMeasure)
     {
-        Collider objectCollider = gameObjectToMeasure.GetComponent<Collider>();
-        Vector3 objectBounds = objectCollider.bounds.size;
+        Renderer objectRenderer = gameObjectToMeasure.GetComponent<Renderer>();
+        Vector3 objectBounds = objectRenderer.bounds.size;
 
         string smallestAxis = "";
 
@@ -39,8 +39,8 @@ public class boundTestScript : MonoBehaviour
     // This method rotates the gameObject according to the camera view based on which axis is largest
     public void RotateToHandView(GameObject gameObjectToMeasure)
     {
-        Collider objectCollider = gameObjectToMeasure.GetComponent<Collider>();
-        Vector3 objectBounds = objectCollider.bounds.size;
+        Renderer objectRenderer = gameObjectToMeasure.GetComponent<Renderer>();
+        Vector3 objectBounds = objectRenderer.bounds.size;
 
         // If Y is largest then we have to rotate x-axis and then check if we also have to rotate around the z-axis
         if (objectBounds.y >= objectBounds.x && objectBounds.y >= objectBounds.z)
@@ -75,8 +75,8 @@ public class boundTestScript : MonoBehaviour
     {
         string smallestAxis = DetectSmallestAxis(objectToResize);
         float ratio = 0;
-        Collider objectCollider = objectToResize.GetComponent<Collider>();
-        Vector3 objectBounds = objectCollider.bounds.size;
+        Renderer objectRenderer = objectToResize.GetComponent<Renderer>();
+        Vector3 objectBounds = objectRenderer.bounds.size;
         float objectCardDifference;
 
         switch (smallestAxis)
