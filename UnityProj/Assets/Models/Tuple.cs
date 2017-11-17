@@ -1,12 +1,25 @@
 ﻿public class Tuple<T1, T2>
 {
-    public T1 First { get; private set; }
-    public T2 Second { get; private set; }
+    public T1 First { get; set; }
+    public T2 Second { get; set; }
     internal Tuple(T1 first, T2 second)
     {
         First = first;
         Second = second;
     }
+
+    //public override bool Equals(object obj)
+    //{
+    //    var other = (Tuple<T1, T2>)obj;
+    //    if(other.First.Equals(First) && other.Second.Equals(Second))
+    //    {
+    //        return true;
+    //    }
+    //    else
+    //    {
+    //        return false;
+    //    }
+    //}
 }
 
 public static class Tuple
