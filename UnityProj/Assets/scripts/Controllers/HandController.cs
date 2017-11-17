@@ -124,7 +124,6 @@ public class HandController : MonoBehaviour
         Transform cardTrans = Instantiate(cardPrefab);
         cardTrans.GetComponent<Rigidbody>().isKinematic = true;
         cardTrans.position = new Vector3(handObjects.Count * 7.5f, 0, 0);
-        cardTrans.Rotate(180, 0, 0);
         Card card = cardTrans.GetComponent<Card>();
         card.Instantiate(jsonCard);
         handObjects.Add(cardTrans);

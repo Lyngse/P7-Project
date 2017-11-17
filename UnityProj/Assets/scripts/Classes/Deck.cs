@@ -10,8 +10,28 @@ public class Deck : MonoBehaviour {
     private List<int> _dealtCards;
     private string deckSourceUrl = "http://i.imgur.com/iSAo3YC.jpg";    
     private string cardBackUrl = "http://i.imgur.com/PwhF8u0.jpg";
+    private int deckSize = 52;
     public bool isFaceDown = true;
     WWWController wwwcontroller;
+    Vector3[] vertices =
+       {
+                new Vector3(-0.5f, 0, -0.5f),
+                new Vector3(0.5f, 0, -0.5f),
+                new Vector3(-0.5f, 0, 0.5f),
+                new Vector3(0.5f, 0, 0.5f),
+            };
+    Vector2[] uvs =
+    {
+                new Vector2(0, 0),
+                new Vector2(1f, 0),
+                new Vector2(0, 1f),
+                new Vector2(1f, 1f),
+            };
+    int[] triangles =
+    {
+                0, 2, 1,
+                1, 2, 3,
+            };
 
     private void Start()
     {
@@ -22,84 +42,44 @@ public class Deck : MonoBehaviour {
     {
         deckSourceUrl = frontUrl;
         cardBackUrl = backUrl;
-        ImageForDeck(Resources.Load<Texture2D>("loading"));
-        _cards = new List<int>(Enumerable.Range(0, 52));
-        _dealtCards = new List<int>();
         wwwcontroller = GameObject.Find("SceneScripts").GetComponent<WWWController>();
-        StartCoroutine(wwwcontroller.getDeck(frontUrl, backUrl, x => ImageForDeck(x.Second)));
+        ImageForDeck(Resources.Load<Texture2D>("loading"), wwwcontroller, false);
+        _cards = new List<int>(Enumerable.Range(0, deckSize));
+        _dealtCards = new List<int>();        
+        StartCoroutine(wwwcontroller.getDeck(frontUrl, backUrl, x => ImageForDeck(x.Second, wwwcontroller, true)));
     }
 
-    //public void InstantiateDecks(string frontUrl, string backUrl)
-    //{
-    //    var cardHeight = this.sourceTex.height / 7;
-    //    var cardWidth = this.sourceTex.width / 10;
-    //    for (int i = 0; i < 10; i++)
-    //    {
-    //        for (int y = 0; y < 7; y++)
-    //        {
-    //            var cardPrefab = Resources.Load<Transform>("Prefabs/Card");
+    private void ImageForDeck(Texture2D deckBack, WWWController wwwcontroller, bool areCardsInitialized)
+    {       
+        MeshRenderer backMr = transform.GetChild(0).GetComponent<MeshRenderer>();
+        Mesh backMesh = transform.GetChild(0).GetComponent<MeshFilter>().mesh;
+        backMesh.Clear();
+        backMesh.vertices = vertices;
+        backMesh.triangles = triangles;
+        backMesh.uv = uvs;
+        backMesh.RecalculateNormals();
+        transform.GetChild(0).gameObject.SetActive(true);        
+        backMr.material.mainTexture = deckBack;
 
-    //            Transform newCard = Instantiate(cardPrefab);
+        if (areCardsInitialized)
+        {
+            
+            wwwcontroller.GetCard(_cards[_cards.Count - 1], deckSourceUrl, cardBackUrl, (x => ChangeBottomCardTexture(x.First)));            
+        }        
+    }
 
-    //            newCard.gameObject.SetActive(false);
-    //            //newCard.GetComponent<Card>().backImg = cardBack;
-    //            newCard.GetComponent<Card>().backImgUrl = cardBackUrl;
-    //            //newCard.GetComponent<Card>().frontImg = CropImageToCard(sourceTex, (i * cardWidth), (y * cardHeight), cardWidth, cardHeight);
-    //            newCard.GetComponent<Card>().frontImgUrl = deckSourceUrl;
-
-    //            newCard.transform.GetChild(0).GetComponent<MeshRenderer>().material.mainTexture = CropImageToCard(sourceTex, (i * cardWidth), (y * cardHeight), cardWidth, cardHeight);
-    //            newCard.transform.GetChild(1).GetComponent<MeshRenderer>().material.mainTexture = cardBack;
-
-    //            newCard.GetComponent<Card>().id = i;
-
-    //            //newCard.GetComponent<Card>().Instantiate();
-
-    //            _cards.Add(newCard);
-    //        }
-    //    }
-
-    //    this.enabled = true;
-    //}
-
-    private void ImageForDeck(Texture2D deckBack)
+    private void ChangeBottomCardTexture(Texture2D texture)
     {
-        Vector3[] vertices =
-        {
-                new Vector3(-0.5f, 0, -0.5f),
-                new Vector3(0.5f, 0, -0.5f),
-                new Vector3(-0.5f, 0, 0.5f),
-                new Vector3(0.5f, 0, 0.5f),
-            };
-        Vector2[] uvs =
-        {
-                new Vector2(0, 0),
-                new Vector2(1f, 0),
-                new Vector2(0, 1f),
-                new Vector2(1f, 1f),
-            };
-        int[] triangles =
-        {
-                0, 2, 1,
-                1, 2, 3,
-            };
-
-        MeshRenderer mr = transform.GetChild(0).GetComponent<MeshRenderer>();
-        mr.material.mainTexture = deckBack;
-        Mesh mesh = transform.GetChild(0).GetComponent<MeshFilter>().mesh;
-
-        mesh.Clear();
-        mesh.vertices = vertices;
-        mesh.triangles = triangles;
-        mesh.uv = uvs;
-        mesh.RecalculateNormals();
-        transform.GetChild(0).gameObject.SetActive(true);
+        MeshRenderer frontMr = transform.GetChild(1).GetComponent<MeshRenderer>();
+        frontMr.material.mainTexture = texture;
+        Mesh frontMesh = transform.GetChild(1).GetComponent<MeshFilter>().mesh;
+        frontMesh.Clear();
+        frontMesh.vertices = vertices;
+        frontMesh.triangles = triangles;
+        frontMesh.uv = uvs;
+        frontMesh.RecalculateNormals();
+        
     }
-
-    //public void ResetDeck()
-    //{
-    //    InstantiateDeck();
-    //    _dealtCards.Clear();
-    //}
 
     public void ShuffleDeck()
     {
@@ -112,6 +92,8 @@ public class Deck : MonoBehaviour {
             this._cards[j] = temp;
         }
 
+        wwwcontroller.GetCard(_cards[_cards.Count - 1], deckSourceUrl, cardBackUrl, (x => ChangeBottomCardTexture(x.First)));
+
         GetComponent<Rigidbody>().AddForce(0, 100, 0);
     }
 
@@ -120,29 +102,25 @@ public class Deck : MonoBehaviour {
         if(_cards.Count > 0)
         {
             int cardID;
+            bool changeBottom = false;
             if (this.isFaceDown)
             {
-                //Send the first card of the list to the given player's hand
-                //Card card = _cards[0].GetComponent<Card>();
-                //HostScript currentHost = GameObject.Find("NetworkHost").GetComponent<HostScript>();
-                //currentHost.sendToClient(color, card, "card");
-                //_dealtCards.Add(_cards[0]);
-                //_cards.Remove(_cards[0]);
                 cardID = _cards[0];
             }
             else
             {
-                //Send the last card of the list to the given player's hand
                 cardID = _cards[_cards.Count - 1];
+                changeBottom = true;
             }
             var cardPrefab = Resources.Load<Transform>("Prefabs/Card");
             Transform cardTransform = Instantiate(cardPrefab);
-            Card card = cardTransform.GetComponent<Card>();
-            card.Instantiate(cardID, deckSourceUrl, cardBackUrl, true);
-            HostScript currentHost = GameObject.Find("NetworkHost").GetComponent<HostScript>();
-            currentHost.sendToClient(color, card, "card");
+            cardTransform.GetComponent<Card>().Instantiate(cardID, deckSourceUrl, cardBackUrl, false);
+            cardTransform.GetComponent<Card>().DealToPlayer(color);
+            Destroy(cardTransform.gameObject);
             ChangeHeight();
             _cards.Remove(cardID);
+            if(changeBottom)
+                wwwcontroller.GetCard(_cards[_cards.Count - 1], deckSourceUrl, cardBackUrl, (x => ChangeBottomCardTexture(x.First)));
         }
     }
 
@@ -164,29 +142,30 @@ public class Deck : MonoBehaviour {
             var cardPrefab = Resources.Load<Transform>("Prefabs/Card");
             Transform newCard = Instantiate(cardPrefab);
             int cardID;
+            bool changeBottom = false;
 
-            if (!this.isFaceDown)
+            if (this.isFaceDown)
             {
                 cardID = _cards[0];
-                //newCard.Rotate(new Vector3(-180, 0, 180));
                 _dealtCards.Add(_cards[0]);
             }
             else
             {
                 cardID = _cards[_cards.Count - 1];
                 _dealtCards.Add(_cards[_cards.Count - 1]);
+                changeBottom = true;
             }
             
-            newCard.GetComponent<Card>().Instantiate(cardID, deckSourceUrl, cardBackUrl, false);
+            newCard.GetComponent<Card>().Instantiate(cardID, deckSourceUrl, cardBackUrl, isFaceDown);
             newCard.position = new Vector3((transform.position.x + 7), 5, transform.position.z);
             newCard.gameObject.SetActive(true);
             ChangeHeight();
             _cards.Remove(cardID);
-            Debug.Log(_cards.Count);
+            if(changeBottom)
+                wwwcontroller.GetCard(_cards[_cards.Count - 1], deckSourceUrl, cardBackUrl, (x => ChangeBottomCardTexture(x.First)));
         } 
     }
-
-    //Not sure if this will work by scaling the deck.
+    
     private void ChangeHeight()
     {
         RectTransform rectTransform = GetComponent<RectTransform>();
