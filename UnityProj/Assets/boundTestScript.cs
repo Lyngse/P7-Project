@@ -13,32 +13,6 @@ public class boundTestScript : MonoBehaviour
     private const int cardShortSide = 7;
     private const float cardRatio = (float)cardLongSide / cardShortSide;
 
-    public string ResizeGameObject(GameObject objectToResize)
-    {
-        Collider objectCollider = objectToResize.GetComponent<Collider>();
-        Vector3 objectBounds = objectCollider.bounds.size;
-
-        string scaledAxis = "";
-
-        if (objectBounds.x <= objectBounds.y && objectBounds.x <= objectBounds.z)
-        {
-            objectCollider.transform.localScale = new Vector3(0.0001f, objectCollider.transform.localScale.z, objectCollider.transform.localScale.y);
-            scaledAxis = "x";
-        }
-        else if (objectBounds.y <= objectBounds.x && objectBounds.y <= objectBounds.z)
-        {
-            objectCollider.transform.localScale = new Vector3(objectCollider.transform.localScale.x, 0.0001f, objectCollider.transform.localScale.y);
-            scaledAxis = "y";
-        }
-        else if (objectBounds.z <= objectBounds.x && objectBounds.z <= objectBounds.y)
-        {
-            objectCollider.transform.localScale = new Vector3(objectCollider.transform.localScale.x, objectCollider.transform.localScale.z, 0.0001f);
-            scaledAxis = "z";
-        }
-
-        return scaledAxis;
-    }
-
     public string DetectSmallestAxis(GameObject gameObjectToMeasure)
     {
         Collider objectCollider = gameObjectToMeasure.GetComponent<Collider>();
@@ -62,12 +36,13 @@ public class boundTestScript : MonoBehaviour
         return smallestAxis;
     }
 
+    // This method rotates the gameObject according to the camera view based on which axis is largest
     public void RotateToHandView(GameObject gameObjectToMeasure)
     {
         Collider objectCollider = gameObjectToMeasure.GetComponent<Collider>();
         Vector3 objectBounds = objectCollider.bounds.size;
 
-        // Y is largest
+        // If Y is largest then we have to rotate x-axis and then check if we also have to rotate around the z-axis
         if (objectBounds.y >= objectBounds.x && objectBounds.y >= objectBounds.z)
         {
             axisToRotateAround = "y";
@@ -80,17 +55,17 @@ public class boundTestScript : MonoBehaviour
         }
         else
         {
-            // X is smallest
+            // X is smallest therefore we rotate around the z-axis
+            axisToRotateAround = "z";
             if (objectBounds.x <= objectBounds.y)
             {
                 gameObjectToMeasure.transform.Rotate(0, 0, 90);
             }
-            // Z is smallest
+            // Z is smallest therefore we rotate around the y-axis
             else if (objectBounds.z <= objectBounds.x)
             {
                 gameObjectToMeasure.transform.Rotate(0, 90, 0);
             }
-            axisToRotateAround = "z";
         }
 
     }
@@ -102,7 +77,7 @@ public class boundTestScript : MonoBehaviour
         float ratio = 0;
         Collider objectCollider = objectToResize.GetComponent<Collider>();
         Vector3 objectBounds = objectCollider.bounds.size;
-
+        float objectCardDifference;
 
         switch (smallestAxis)
         {
@@ -112,13 +87,11 @@ public class boundTestScript : MonoBehaviour
                     ratio = objectBounds.y / objectBounds.z;
                     if (ratio >= cardRatio)
                     {
-                        var objectCardDifference = cardLongSide / objectBounds.y;
-                        ScaleObjectToRatio(objectToResize, objectBounds, objectCardDifference);
+                        objectCardDifference = cardLongSide / objectBounds.y;
                     }
                     else
                     {
-                        var objectCardDifference = cardShortSide / objectBounds.z;
-                        ScaleObjectToRatio(objectToResize, objectBounds, objectCardDifference);
+                        objectCardDifference = cardShortSide / objectBounds.z;
                     }
                 }
                 else
@@ -126,15 +99,12 @@ public class boundTestScript : MonoBehaviour
                     ratio = objectBounds.z / objectBounds.y;
                     if (ratio >= cardRatio)
                     {
-                        var objectCardDifference = cardLongSide / objectBounds.z;
-                        ScaleObjectToRatio(objectToResize, objectBounds, objectCardDifference);
+                        objectCardDifference = cardLongSide / objectBounds.z;
                     }
                     else
                     {
-                        var objectCardDifference = cardShortSide / objectBounds.y;
-                        ScaleObjectToRatio(objectToResize, objectBounds, objectCardDifference);
+                        objectCardDifference = cardShortSide / objectBounds.y;
                     }
-
                 }
                 break;
 
@@ -144,13 +114,11 @@ public class boundTestScript : MonoBehaviour
                     ratio = objectBounds.x / objectBounds.z;
                     if (ratio >= cardRatio)
                     {
-                        var objectCardDifference = cardLongSide / objectBounds.x;
-                        ScaleObjectToRatio(objectToResize, objectBounds, objectCardDifference);
+                        objectCardDifference = cardLongSide / objectBounds.x;
                     }
                     else
                     {
-                        var objectCardDifference = cardShortSide / objectBounds.z;
-                        ScaleObjectToRatio(objectToResize, objectBounds, objectCardDifference);
+                        objectCardDifference = cardShortSide / objectBounds.z;
                     }
                 }
                 else
@@ -158,15 +126,12 @@ public class boundTestScript : MonoBehaviour
                     ratio = objectBounds.z / objectBounds.x;
                     if (ratio >= cardRatio)
                     {
-                        var objectCardDifference = cardLongSide / objectBounds.z;
-                        ScaleObjectToRatio(objectToResize, objectBounds, objectCardDifference);
+                        objectCardDifference = cardLongSide / objectBounds.z;
                     }
                     else
                     {
-                        var objectCardDifference = cardShortSide / objectBounds.x;
-                        ScaleObjectToRatio(objectToResize, objectBounds, objectCardDifference);
+                        objectCardDifference = cardShortSide / objectBounds.x;
                     }
-
                 }
                 break;
 
@@ -176,13 +141,11 @@ public class boundTestScript : MonoBehaviour
                     ratio = objectBounds.x / objectBounds.y;
                     if (ratio >= cardRatio)
                     {
-                        var objectCardDifference = cardLongSide / objectBounds.x;
-                        ScaleObjectToRatio(objectToResize, objectBounds, objectCardDifference);
+                        objectCardDifference = cardLongSide / objectBounds.x;
                     }
                     else
                     {
-                        var objectCardDifference = cardShortSide / objectBounds.y;
-                        ScaleObjectToRatio(objectToResize, objectBounds, objectCardDifference);
+                        objectCardDifference = cardShortSide / objectBounds.y;
                     }
                 }
                 else
@@ -190,21 +153,19 @@ public class boundTestScript : MonoBehaviour
                     ratio = objectBounds.y / objectBounds.x;
                     if (ratio >= cardRatio)
                     {
-                        var objectCardDifference = cardLongSide / objectBounds.y;
-                        ScaleObjectToRatio(objectToResize, objectBounds, objectCardDifference);
+                        objectCardDifference = cardLongSide / objectBounds.y;
                     }
                     else
                     {
-                        var objectCardDifference = cardShortSide / objectBounds.x;
-                        ScaleObjectToRatio(objectToResize, objectBounds, objectCardDifference);
+                        objectCardDifference = cardShortSide / objectBounds.x;
                     }
-
                 }
                 break;
 
             default:
                 throw new ArgumentOutOfRangeException("Unknown axis " + smallestAxis);
         }
+        ScaleObjectToRatio(objectToResize, objectBounds, objectCardDifference);
 
     }
 
@@ -218,28 +179,8 @@ public class boundTestScript : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        //RelativeResizeGameObject(BoundGameObject);
-        //RotateToHandView(BoundGameObject);
-
-
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        switch (axisToRotateAround)
-        {
-            case "y":
-                BoundGameObject.transform.RotateAround(BoundGameObject.GetComponent<Collider>().bounds.center, Vector3.up, 5);
-                break;
-            case "z":
-                BoundGameObject.transform.RotateAround(BoundGameObject.GetComponent<Collider>().bounds.center, Vector3.forward, 5);
-                break;
-            default:
-                break;
-
-        }
-
+        //The two methods which resizes and rotates the gameObject
+        RelativeResizeGameObject(BoundGameObject);
+        RotateToHandView(BoundGameObject);
     }
 }
