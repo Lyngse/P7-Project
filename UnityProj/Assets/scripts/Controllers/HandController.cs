@@ -11,6 +11,7 @@ public class HandController : MonoBehaviour
     float xMin = 22.5f;
     float leftMouseButtonDownTime;
     Transform selectedObj = null;
+    Vector3 oldPos;
     public Transform cardPrefab;
     public Transform figurinePrefab;
     public Canvas cardMenuCanvas;
@@ -51,22 +52,30 @@ public class HandController : MonoBehaviour
 
     void handleLeftMouseClick(Vector3 screenPos)
     {
-
-        Ray ray = Camera.main.ScreenPointToRay(screenPos);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit) && hit.transform != selectedObj)
+        if(selectedObj != null)
         {
-            if (hit.transform.tag == "Card")
-            {
-                selectedObj= hit.transform;
-                cardMenuCanvas.gameObject.SetActive(true);
-            }
-        }
-        else
-        {
+            selectedObj.position = oldPos;
             selectedObj = null;
             cardMenuCanvas.gameObject.SetActive(false);
         }
+        else
+        {
+            Ray ray = Camera.main.ScreenPointToRay(screenPos);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit))
+            {
+
+                selectedObj = hit.transform;
+                oldPos = selectedObj.position;
+                var camPos = Camera.main.transform.position;
+                selectedObj.position = new Vector3(camPos.x, camPos.y - 11, camPos.z);
+                if (hit.transform.tag == "Card")
+                {
+                    cardMenuCanvas.gameObject.SetActive(true);
+                }
+            }
+        }
+        
     }
 
     void handleLeftMouseDrag(Vector3 currentScreenPos)
