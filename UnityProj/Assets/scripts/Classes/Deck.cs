@@ -115,7 +115,7 @@ public class Deck : MonoBehaviour {
             var cardPrefab = Resources.Load<Transform>("Prefabs/Card");
             Transform cardTransform = Instantiate(cardPrefab);
             Card card = cardTransform.GetComponent<Card>();
-            card.Instantiate(cardID, deckSourceUrl, cardBackUrl, true);
+            card.Instantiate(cardID, deckSourceUrl, cardBackUrl, false);
             HostScript currentHost = GameObject.Find("NetworkHost").GetComponent<HostScript>();
             currentHost.sendToClient(color, card, "card");
             ChangeHeight();

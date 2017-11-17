@@ -69,6 +69,7 @@ public class Card : MonoBehaviour, IJsonable
     public void DealToPlayer(Utility.ClientColor color)
     {
         HostScript currentHost = GameObject.Find("NetworkHost").GetComponent<HostScript>();
+        this.isFaceDown = false;
         currentHost.sendToClient(color, this, "card");
     }
 
