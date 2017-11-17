@@ -17,14 +17,15 @@ class ClientScript : NetworkScript
     InputField codeInput;
     Text colorText;
     Utility.ClientColor myColor = Utility.ClientColor.none;
+    public GameObject colorInfo;
 
     protected override void Start()
     {
         base.Start();
         codeInput = connectCanvas.GetComponentInChildren<InputField>();
         connectButton = connectCanvas.GetComponentInChildren<Button>();
-        connectButton.onClick.AddListener(clientConnect);
-        colorText = gameCanvas.GetComponentsInChildren<Text>().First(text => text.name == "colorText");
+        connectButton.onClick.AddListener(clientConnect);  
+        colorText = colorInfo.GetComponentsInChildren<Text>().First(text => text.name == "colorText");
     }
 
     void clientConnect()
