@@ -48,7 +48,8 @@ public class WWWController: MonoBehaviour
             yield return frontWWW;
             yield return backWWW;
             result = new Tuple<Texture2D, Texture2D>(frontWWW.texture, backWWW.texture);
-            deckDict.Add(identifier, result);
+            if(!deckDict.ContainsKey(identifier))
+                deckDict.Add(identifier, result);
         }        
         callback(result);
     }

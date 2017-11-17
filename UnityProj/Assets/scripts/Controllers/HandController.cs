@@ -8,7 +8,7 @@ public class HandController : MonoBehaviour
 {
     Plane gamePlane = new Plane(Vector3.up, Vector3.zero);
     List<Transform> handObjects = new List<Transform>();
-    float xMin = 7.5f;
+    float xMin = 22.5f;
     float leftMouseButtonDownTime;
     Transform selectedObj = null;
     public Transform cardPrefab;
@@ -36,14 +36,11 @@ public class HandController : MonoBehaviour
         }
         if (Input.GetMouseButton(0))
         {
-            if (currentTime - leftMouseButtonDownTime > 0.5) //drag
-            {
-                handleLeftMouseDrag(currentScreenPos);
-            }
+            handleLeftMouseDrag(currentScreenPos);
         }
         if (Input.GetMouseButtonUp(0))
         {
-            if (currentTime - leftMouseButtonDownTime <= 0.5) // click
+            if (currentTime - leftMouseButtonDownTime <= 0.2) // click
             {
                 handleLeftMouseClick(currentScreenPos);
             }
@@ -74,9 +71,9 @@ public class HandController : MonoBehaviour
 
     void handleLeftMouseDrag(Vector3 currentScreenPos)
     {
-        if (handObjects.Count > 3)
+        if (handObjects.Count > 7)
         {
-            float xMax = ((handObjects.Count - 3) * 7.5f) + 7.5f;
+            float xMax = ((handObjects.Count - 7) * 7.5f) + xMin;
             Vector3 lastPlanePos = screenToPlane(lastScreenPos);
             Vector3 currentPlanePos = screenToPlane(currentScreenPos);
             Vector3 deltaPlanePos = currentPlanePos - lastPlanePos;
@@ -110,7 +107,12 @@ public class HandController : MonoBehaviour
                     Card card = selectedObj.GetComponent<Card>();
                     card.isFaceDown = isFaceDown;
                     clientScript.sendToHost(card, "card");
+                    int i = handObjects.IndexOf(selectedObj);
                     handObjects.Remove(selectedObj);
+                    for (; i < handObjects.Count; i++)
+                    {
+                        handObjects[i].transform.Translate(new Vector3(7.5f, 0, 0));
+                    }
                     Destroy(selectedObj.gameObject);
                     break;
                 default:

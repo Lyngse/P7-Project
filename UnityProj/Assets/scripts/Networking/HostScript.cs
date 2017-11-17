@@ -16,6 +16,7 @@ class HostScript : NetworkScript
     private void Start()
     {
         clientStateHandler = new ClientStateHandler();
+        base.Start();
     }
 
     protected override void onOpen()
