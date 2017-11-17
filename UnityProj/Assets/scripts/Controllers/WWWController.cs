@@ -77,8 +77,12 @@ public class WWWController: MonoBehaviour
     {
         var cardHeight = sourceTex.height / 7f;
         var cardWidth = sourceTex.width / 10f;
-        float sourceX = ((cardID / 7) * cardWidth);
-        float sourceY = ((cardID % 7) * cardHeight);
+
+        float sourceX = ((cardID % 10) * cardWidth);
+        float sourceY = (sourceTex.height - (cardHeight + (cardHeight * (Mathf.FloorToInt(cardID / 10)))));
+
+        //float sourceX = ((cardID / 7) * cardWidth);
+        //float sourceY = ((cardID % 7) * cardHeight);
         int x = Mathf.FloorToInt(sourceX);
         int y = Mathf.FloorToInt(sourceY);
         int width = Mathf.FloorToInt(cardWidth);

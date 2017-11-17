@@ -8,8 +8,8 @@ public class Deck : MonoBehaviour {
 
     private List<int> _cards;
     private List<int> _dealtCards;
-    private string deckSourceUrl = "http://i.imgur.com/hgumn3h.jpg";
-    private string cardBackUrl = "http://www.google.fr/url?source=imglanding&ct=img&q=http://mywastedlife.com/CAH/img/back-white.png&sa=X&ved=0CAkQ8wdqFQoTCIOlwO7IhcYCFQFYFAodYnoAUg&usg=AFQjCNGdlrUGLinNrm18KedLAfCNPW3x6w";
+    private string deckSourceUrl = "http://i.imgur.com/iSAo3YC.jpg";    
+    private string cardBackUrl = "http://i.imgur.com/PwhF8u0.jpg";
     public bool isFaceDown = true;
     WWWController wwwcontroller;
 
@@ -23,7 +23,7 @@ public class Deck : MonoBehaviour {
         deckSourceUrl = frontUrl;
         cardBackUrl = backUrl;
         ImageForDeck(Resources.Load<Texture2D>("loading"));
-        _cards = new List<int>(Enumerable.Range(0, 69));
+        _cards = new List<int>(Enumerable.Range(0, 52));
         _dealtCards = new List<int>();
         wwwcontroller = GameObject.Find("SceneScripts").GetComponent<WWWController>();
         StartCoroutine(wwwcontroller.getDeck(frontUrl, backUrl, x => ImageForDeck(x.Second)));
@@ -135,11 +135,14 @@ public class Deck : MonoBehaviour {
                 //Send the last card of the list to the given player's hand
                 cardID = _cards[_cards.Count - 1];
             }
-            Card card = new Card();
+            var cardPrefab = Resources.Load<Transform>("Prefabs/Card");
+            Transform cardTransform = Instantiate(cardPrefab);
+            Card card = cardTransform.GetComponent<Card>();
             card.Instantiate(cardID, deckSourceUrl, cardBackUrl, true);
             HostScript currentHost = GameObject.Find("NetworkHost").GetComponent<HostScript>();
             currentHost.sendToClient(color, card, "card");
             ChangeHeight();
+            _cards.Remove(cardID);
         }
     }
 
@@ -162,24 +165,25 @@ public class Deck : MonoBehaviour {
             Transform newCard = Instantiate(cardPrefab);
             int cardID;
 
-            if (this.isFaceDown)
+            if (!this.isFaceDown)
             {
                 cardID = _cards[0];
-                newCard.Rotate(new Vector3(-180, 0, 180));
+                //newCard.Rotate(new Vector3(-180, 0, 180));
                 _dealtCards.Add(_cards[0]);
-                _cards.Remove(_cards[0]);
             }
             else
             {
                 cardID = _cards[_cards.Count - 1];
                 _dealtCards.Add(_cards[_cards.Count - 1]);
-                _cards.Remove(_cards[_cards.Count - 1]);
             }
-            newCard.GetComponent<Card>().Instantiate(cardID, deckSourceUrl, cardBackUrl, true);
+            
+            newCard.GetComponent<Card>().Instantiate(cardID, deckSourceUrl, cardBackUrl, false);
             newCard.position = new Vector3((transform.position.x + 7), 5, transform.position.z);
             newCard.gameObject.SetActive(true);
             ChangeHeight();
-        }
+            _cards.Remove(cardID);
+            Debug.Log(_cards.Count);
+        } 
     }
 
     //Not sure if this will work by scaling the deck.
@@ -187,5 +191,14 @@ public class Deck : MonoBehaviour {
     {
         RectTransform rectTransform = GetComponent<RectTransform>();
         rectTransform.localScale = new Vector3(rectTransform.localScale.x, rectTransform.localScale.y - (rectTransform.localScale.y / _cards.Count), rectTransform.localScale.z);
+    }
+
+    public bool IsEmpty()
+    {
+        if(_cards.Count < 1)
+        {
+            return true;
+        }
+        return false;
     }
 }

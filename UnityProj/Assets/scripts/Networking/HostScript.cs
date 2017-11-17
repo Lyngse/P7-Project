@@ -28,6 +28,7 @@ class HostScript : NetworkScript
 
     protected override void onMessage(string data)
     {
+        
         Debug.Log(data);
         var message = JSON.Parse(data);
         var options = new MessageOptions(message["options"]);
@@ -36,6 +37,8 @@ class HostScript : NetworkScript
             case "code":
                 code = options.code;
                 codeField.text = code;
+                Transform menuField = GameObject.Find("CodeField").transform.GetChild(0);
+                menuField.GetComponent<Text>().text = code;
                 break;
             case "client_joined":
                 clientColors.Add(options.color, new List<IJsonable>());

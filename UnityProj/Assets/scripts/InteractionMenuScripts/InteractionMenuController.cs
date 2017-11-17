@@ -42,6 +42,7 @@ public class InteractionMenuController : MonoBehaviour {
                         ShowColors showColors = currentMenu.canvas.transform.GetChild(0).GetChild(8).GetComponent<ShowColors>();
                         HideColors hideColors = currentMenu.canvas.transform.GetChild(1).GetComponent<HideColors>();
                         drawFromDeck.deckTransform = currentTransform;
+                        drawFromDeck.menu = currentMenu;
                         shuffleDeck.deckTransform = currentTransform;
                         showColors.menu = currentMenu;
                         showColors.cardTransform = currentTransform;

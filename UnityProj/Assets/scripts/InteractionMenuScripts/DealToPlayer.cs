@@ -28,8 +28,11 @@ public class DealToPlayer : MonoBehaviour, IPointerUpHandler
         else if(currentTransform.tag == "Deck")
         {
             currentTransform.GetComponent<Deck>().DealToPlayer(color);
-            Destroy(menu.hitTransform.gameObject);
-            Destroy(menu.canvas.gameObject);
+            if (currentTransform.GetComponent<Deck>().IsEmpty())
+            {
+                Destroy(menu.hitTransform.gameObject);
+                Destroy(menu.canvas.gameObject);
+            }            
         }
     }
 }
