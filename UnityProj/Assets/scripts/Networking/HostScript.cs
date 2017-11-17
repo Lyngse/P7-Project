@@ -63,7 +63,7 @@ class HostScript : NetworkScript
                 var objects2 = clientStateHandler.colorConnected(ccPackage.toColor);
                 foreach (var item in objects2)
                 {
-                    localSendToClient(options.color, item.Second, item.First);
+                    localSendToClient(ccPackage.toColor, item.Second, item.First);
                 }
                 break;
             case "package_from_client":
