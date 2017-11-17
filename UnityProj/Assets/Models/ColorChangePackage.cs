@@ -6,8 +6,8 @@ using SimpleJSON;
 
 class ColorChangePackage : IJsonable
 {
-    Utility.ClientColor fromColor;
-    Utility.ClientColor toColor;
+    public Utility.ClientColor fromColor;
+    public Utility.ClientColor toColor;
 
     public ColorChangePackage(Utility.ClientColor fromColor, Utility.ClientColor toColor)
     {
