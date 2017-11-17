@@ -50,7 +50,7 @@ class HostScript : NetworkScript
                 var objects1 = clientStateHandler.colorConnected(options.color);
                 foreach (var item in objects1)
                 {
-                    sendToClient(options.color, item.Second, item.First);
+                    localSendToClient(options.color, item.Second, item.First);
                 }
                 break;
             case "client_disconnected":
@@ -63,7 +63,7 @@ class HostScript : NetworkScript
                 var objects2 = clientStateHandler.colorConnected(ccPackage.toColor);
                 foreach (var item in objects2)
                 {
-                    sendToClient(options.color, item.Second, item.First);
+                    localSendToClient(ccPackage.toColor, item.Second, item.First);
                 }
                 break;
             case "package_from_client":
@@ -94,10 +94,15 @@ class HostScript : NetworkScript
 
     public void sendToClient(Utility.ClientColor clientColor, IJsonable package, string packageType)
     {
+        localSendToClient(clientColor, package, packageType);
+        clientStateHandler.addObjectToColor(clientColor, package, packageType);
+    }
+
+    private void localSendToClient(Utility.ClientColor clientColor, IJsonable package, string packageType)
+    {
         var options = new MessageOptions("host_to_client", code, clientColor, packageType);
         var wbm = new WebSocketMessage(options, package);
         var json = wbm.toJson();
-        clientStateHandler.addObjectToColor(clientColor, package, packageType);
         webSocket.Send(json.ToString());
     }
 
@@ -145,7 +150,7 @@ class HostScript : NetworkScript
 
             for (int i = 0; i < objects.Count; i++)
             {
-                if (objects[i].Second.Equals(obj))
+                if (objects[i].Second.toJson().ToString().Equals(obj.toJson().ToString()))
                 {
                     objects.RemoveAt(i);
                     break;
