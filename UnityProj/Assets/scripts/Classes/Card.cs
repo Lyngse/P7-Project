@@ -32,6 +32,8 @@ public class Card : MonoBehaviour, IJsonable
 
     void init()
     {
+        if (GetComponent<Transform>() == null)
+            return;
         transform.GetChild(0).GetComponent<MeshRenderer>().material.mainTexture = Resources.Load<Texture2D>("loading");
         transform.GetChild(1).GetComponent<MeshRenderer>().material.mainTexture = Resources.Load<Texture2D>("loading");
 
