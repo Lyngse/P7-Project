@@ -60,6 +60,7 @@ class ClientScript : NetworkScript
                 handlePackage(options.packageType, message["package"]);
                 break;
             case "color_change":
+                resetValues();
                 myColor = options.color;
                 connectCanvas.gameObject.SetActive(false);
                 gameCanvas.gameObject.SetActive(true);
@@ -113,8 +114,10 @@ class ClientScript : NetworkScript
         webSocket.Send(json.ToString());
     }
 
-    public void changeColor(Utility.ClientColor newColor)
+    public void changeColor(int newColorInt)
     {
+        var newColor = (Utility.ClientColor)newColorInt;
+        if(newColor == myColor) return;
         var options = new MessageOptions("color_change", code);
         var package = new ColorChangePackage(myColor, newColor);
         var wbm = new WebSocketMessage(options, package);

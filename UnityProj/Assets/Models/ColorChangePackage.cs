@@ -30,7 +30,7 @@ class ColorChangePackage : IJsonable
     {
         var json = new JSONObject();
         json.Add("fromColor", new JSONNumber((int)fromColor));
-        json.Add("fromColor", new JSONNumber((int)fromColor));
+        json.Add("toColor", new JSONNumber((int)toColor));
         return json;
     }
 }
