@@ -22,8 +22,19 @@ public class HandController : MonoBehaviour
     private void Start()
     {
         clientScript = GameObject.Find("SceneScripts").GetComponent<ClientScript>();
-        //Transform cardTrans = Instantiate(cardPrefab);
-        //cardTrans.GetComponent<Rigidbody>().isKinematic = true;
+
+        float goalHandWidth = 7.75f * 7f;
+        float newSize = (goalHandWidth / Camera.main.aspect) / 2;
+        Camera.main.orthographicSize = newSize;
+
+        for (int i = 0; i < 15; i++)
+        {
+            Transform cardTrans = Instantiate(cardPrefab);
+            cardTrans.GetComponent<Rigidbody>().isKinematic = true;
+            cardTrans.position = new Vector3(handObjects.Count * 7.5f, 0, 0);
+            handObjects.Add(cardTrans);
+        }
+        
     }
 
     // Update is called once per frame
@@ -54,7 +65,10 @@ public class HandController : MonoBehaviour
     {
         if(selectedObj != null)
         {
-            selectedObj.position = oldPos;
+            //selectedObj.position = oldPos;
+            selectedObj.localScale = new Vector3(7f, 10f, 1f);
+            selectedObj.transform.Translate(new Vector3(0f, 0f, -1f));
+            selectedObj.GetComponent<LineRenderer>().enabled = false;
             selectedObj = null;
             cardMenuCanvas.gameObject.SetActive(false);
         }
@@ -66,9 +80,13 @@ public class HandController : MonoBehaviour
             {
 
                 selectedObj = hit.transform;
-                oldPos = selectedObj.position;
-                var camPos = Camera.main.transform.position;
-                selectedObj.position = new Vector3(camPos.x, camPos.y - 11, camPos.z);
+                //oldPos = selectedObj.position;
+                //var camPos = Camera.main.transform.position;
+                //selectedObj.position = new Vector3(camPos.x, camPos.y - 11, camPos.z);
+                var scale = selectedObj.localScale;
+                selectedObj.localScale = new Vector3(scale.x * 1.15f, scale.y * 1.15f, scale.z);
+                selectedObj.transform.Translate(new Vector3(0f, 0f, 1f));
+                selectedObj.GetComponent<LineRenderer>().enabled = true;
                 if (hit.transform.tag == "Card")
                 {
                     cardMenuCanvas.gameObject.SetActive(true);
