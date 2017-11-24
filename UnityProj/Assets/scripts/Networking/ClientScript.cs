@@ -11,7 +11,6 @@ using WebSocketSharp;
 class ClientScript : NetworkScript
 {
     public Canvas connectCanvas;
-    public Canvas gameCanvas;
     public HandController handController;
     Button connectButton;
     InputField codeInput;
@@ -50,6 +49,19 @@ class ClientScript : NetworkScript
         SceneManager.LoadScene("MenuScene", LoadSceneMode.Single);
     }
 
+    public void exit()
+    {
+        if(webSocket.IsAlive)
+            webSocket.Close();
+        else
+        {
+            resetValues();
+            connectButton.interactable = false;
+            SceneManager.LoadScene("MenuScene", LoadSceneMode.Single);
+        }
+
+    }
+
     protected override void onMessage(string data)
     {
         Debug.Log(data);
@@ -64,7 +76,7 @@ class ClientScript : NetworkScript
                 resetValues();
                 myColor = options.color;
                 connectCanvas.gameObject.SetActive(false);
-                gameCanvas.gameObject.SetActive(true);
+                colorInfo.SetActive(true);
                 colorText.text = myColor.ToString();
                 colorText.color = Utility.colors[(int)myColor];
                 break;
@@ -81,7 +93,7 @@ class ClientScript : NetworkScript
     {
         myColor = Utility.ClientColor.none;
         connectCanvas.gameObject.SetActive(true);
-        gameCanvas.gameObject.SetActive(false);
+        colorInfo.SetActive(false);
         handController.ClearHand();
         colorText.text = "";
         colorText.color = Utility.colors[0];

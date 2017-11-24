@@ -18,6 +18,7 @@ public class HandController : MonoBehaviour
     ClientScript clientScript;
 
     Vector3 lastScreenPos;
+    bool objDragging = false;
 
     private void Start()
     {
@@ -42,16 +43,31 @@ public class HandController : MonoBehaviour
     {
         Vector3 currentScreenPos = Input.mousePosition;
         float currentTime = Time.time;
+
         if (Input.GetMouseButtonDown(0))
         {
             leftMouseButtonDownTime = Time.time;
+            Ray ray = Camera.main.ScreenPointToRay(currentScreenPos);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit))
+            {
+                if(selectedObj == hit.transform)
+                {
+                    objDragging = true;
+                }
+            }
         }
-        if (Input.GetMouseButton(0))
+        else if (Input.GetMouseButton(0))
         {
             handleLeftMouseDrag(currentScreenPos);
         }
-        if (Input.GetMouseButtonUp(0))
+        else if (Input.GetMouseButtonUp(0))
         {
+            if (objDragging)
+            {
+                handleObjDrop(currentScreenPos);
+                objDragging = false;
+            }
             if (currentTime - leftMouseButtonDownTime <= 0.2) // click
             {
                 handleLeftMouseClick(currentScreenPos);
@@ -60,6 +76,8 @@ public class HandController : MonoBehaviour
         lastScreenPos = currentScreenPos;
 
     }
+
+    
 
     void handleLeftMouseClick(Vector3 screenPos)
     {
@@ -84,7 +102,7 @@ public class HandController : MonoBehaviour
                 //var camPos = Camera.main.transform.position;
                 //selectedObj.position = new Vector3(camPos.x, camPos.y - 11, camPos.z);
                 var scale = selectedObj.localScale;
-                selectedObj.localScale = new Vector3(scale.x * 1.15f, scale.y * 1.15f, scale.z);
+                selectedObj.localScale = new Vector3(scale.x * 1.2f, scale.y * 1.2f, scale.z);
                 selectedObj.transform.Translate(new Vector3(0f, 0f, 1f));
                 selectedObj.GetComponent<LineRenderer>().enabled = true;
                 if (hit.transform.tag == "Card")
@@ -98,13 +116,18 @@ public class HandController : MonoBehaviour
 
     void handleLeftMouseDrag(Vector3 currentScreenPos)
     {
-        if (handObjects.Count > 7)
+        Vector3 lastPlanePos = screenToPlane(lastScreenPos);
+        Vector3 currentPlanePos = screenToPlane(currentScreenPos);
+        Vector3 deltaPlanePos = currentPlanePos - lastPlanePos;
+        float deltaX = deltaPlanePos.x;
+
+        if (objDragging)
+        {
+            selectedObj.Translate(new Vector3(-deltaX, 0));
+        }
+        else if (handObjects.Count > 7)
         {
             float xMax = ((handObjects.Count - 7) * 7.5f) + xMin;
-            Vector3 lastPlanePos = screenToPlane(lastScreenPos);
-            Vector3 currentPlanePos = screenToPlane(currentScreenPos);
-            Vector3 deltaPlanePos = currentPlanePos - lastPlanePos;
-            float deltaX = deltaPlanePos.x;
             Vector3 camPos = Camera.main.transform.position;
             float newX = camPos.x - deltaX;
             if (newX < xMin)
@@ -124,6 +147,40 @@ public class HandController : MonoBehaviour
         }
     }
 
+    void handleObjDrop(Vector3 screenPos)
+    {
+        Vector3 planePos = screenToPlane(screenPos);
+        float x = planePos.x;
+        int newIndex = Mathf.FloorToInt(x / 7.5f) + 1;
+        if (newIndex >= handObjects.Count)
+            newIndex = handObjects.Count - 1;
+        else if (newIndex < 0)
+            newIndex = 0;
+        int oldIndex = handObjects.IndexOf(selectedObj);
+        if(oldIndex < newIndex)
+        {
+            handObjects.Insert(newIndex, selectedObj);
+            handObjects.RemoveAt(oldIndex);
+        }else
+        {
+            handObjects.RemoveAt(oldIndex);
+            handObjects.Insert(newIndex, selectedObj);
+        }
+        updatePositions();
+    }
+
+    void updatePositions()
+    {
+        for (int i = 0; i < handObjects.Count; i++)
+        {
+            handObjects[i].transform.position = new Vector3(i * 7.5f, 0, 0);
+        }
+        if(selectedObj != null)
+        {
+            selectedObj.transform.Translate(new Vector3(0f, 0f, 1f));
+        }
+    }
+
     public void playObject(bool isFaceDown)
     {
         if(selectedObj != null)
@@ -136,10 +193,7 @@ public class HandController : MonoBehaviour
                     clientScript.sendToHost(card, "card");
                     int i = handObjects.IndexOf(selectedObj);
                     handObjects.Remove(selectedObj);
-                    for (; i < handObjects.Count; i++)
-                    {
-                        handObjects[i].transform.Translate(new Vector3(7.5f, 0, 0));
-                    }
+                    updatePositions();
                     Destroy(selectedObj.gameObject);
                     break;
                 default:
