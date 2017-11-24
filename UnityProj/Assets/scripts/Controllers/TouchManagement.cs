@@ -77,7 +77,7 @@ public class TouchManagement : MonoBehaviour {
                             if (target.isMoving)
                             {
                                 if (target.hitTransform.tag != "Undragable")
-                                    target.hitTransform.GetComponent<Rigidbody>().useGravity = true;
+                                    target.hitTransform.GetComponent<Rigidbody>().isKinematic = false;
                             }
                             else if (!target.isMoving)
                             {

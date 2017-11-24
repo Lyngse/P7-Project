@@ -20,15 +20,53 @@ public class WWWController: MonoBehaviour
             result = figurineDict[identifier];            
         } else
         {
-            WWW figurineWWW = new WWW(figurineUrl);
+            Texture2D figurineTexture = new Texture2D(4, 4);
+            var colors = new Color[figurineTexture.GetPixels().Length];
+            switch (figurineUrl)
+            {
+                
+                case "":
+                    setTextureToColor(Utility.ClientColor.none, figurineTexture);
+                    break;
+                case "red":
+                    setTextureToColor(Utility.ClientColor.red, figurineTexture);
+                    break;
+                case "green":
+                    setTextureToColor(Utility.ClientColor.green, figurineTexture);
+                    break;
+                case "blue":
+                    setTextureToColor(Utility.ClientColor.blue, figurineTexture);
+                    break;
+                case "white":
+                    setTextureToColor(Utility.ClientColor.white, figurineTexture);
+                    break;
+                case "black":
+                    setTextureToColor(Utility.ClientColor.black, figurineTexture);
+                    break;
+                case "yellow":
+                    setTextureToColor(Utility.ClientColor.yellow, figurineTexture);
+                    break;
+                case "orange":
+                    setTextureToColor(Utility.ClientColor.orange, figurineTexture);
+                    break;
+                case "purple":
+                    setTextureToColor(Utility.ClientColor.purple, figurineTexture);
+                    break;
+                default:
+                    WWW figurineWWW = new WWW(figurineUrl);
+                    yield return figurineWWW;
+                    figurineTexture = figurineWWW.texture;
+                    break;
+            }
             WWW meshWWW = new WWW(meshUrl);
-            yield return figurineWWW;
+            
             yield return meshWWW;
             ObjImporter importer = new ObjImporter();
             Mesh mesh = importer.ImportFile(meshWWW.text);
             mesh.RecalculateNormals();
-            result = new Tuple<Texture2D, Mesh>(figurineWWW.texture, mesh);
-            figurineDict.Add(identifier, result);
+            result = new Tuple<Texture2D, Mesh>(figurineTexture, mesh);
+            if (!figurineDict.ContainsKey(identifier))
+                figurineDict.Add(identifier, result);
         }
         callback(result);
     }
@@ -72,6 +110,18 @@ public class WWWController: MonoBehaviour
                 callback(new Tuple<Texture2D, Texture2D>(frontTex, backTex));
             })));
         }
+    }
+
+    private void setTextureToColor(Utility.ClientColor color, Texture2D texture)
+    {
+        var pixels = new Color[texture.GetPixels().Length];
+        for (int i = 0; i < pixels.Length; i++)
+        {
+            pixels[i] = Utility.colors[(int)color];
+        }
+        texture.SetPixels(pixels);
+        texture.Apply();
+
     }
 
     private Texture2D CropImageToCard(Texture2D sourceTex, int cardID)

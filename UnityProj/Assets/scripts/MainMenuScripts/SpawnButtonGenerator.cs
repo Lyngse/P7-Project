@@ -8,6 +8,7 @@ public class SpawnButtonGenerator : MonoBehaviour {
     private RectTransform spawnWindow;
     private Vector3[] buttonPositions;
     public GameObject spawnButtonPrefab;
+    List<Tuple<GameObject, string[]>> spawnableObjects = new List<Tuple<GameObject, string[]>>();
 
     void Start () {
 
@@ -17,15 +18,20 @@ public class SpawnButtonGenerator : MonoBehaviour {
         spawnWindow.sizeDelta = new Vector2 (((Screen.width / 5) * 4), ((Screen.height / 5) * 4));
 
         prefabs = Resources.LoadAll<GameObject>("Prefabs");
-
-        for (int i = 0; i < prefabs.Length; i++)
+        GameObject figurinePrefab = Resources.Load<GameObject>("Prefabs/Figurine");
+        spawnableObjects.Add(Tuple.New(figurinePrefab, new string[] { "red pawn", "red", "http://pastebin.ca/3399547" }));
+        spawnableObjects.Add(Tuple.New(figurinePrefab, new string[] { "green pawn", "green", "http://pastebin.ca/3399547" }));
+        spawnableObjects.Add(Tuple.New(figurinePrefab, new string[] { "blue pawn", "blue", "http://pastebin.ca/3399547" }));
+        spawnableObjects.Add(Tuple.New(figurinePrefab, new string[] { "yellow pawn", "yellow", "http://pastebin.ca/3399547" }));
+        for (int i = 0; i < spawnableObjects.Count; i++)
         {
             GameObject spawnButton = (GameObject)Instantiate(spawnButtonPrefab);
             spawnButton.transform.SetParent(spawnWindow);
             spawnButton.transform.localScale = new Vector3(1, 1, 1);
-            spawnButton.GetComponent<Spawn>().setPrefab(prefabs[i]);
+            Spawn spawn = spawnButton.GetComponent<Spawn>();
+            spawn.instatiate(spawnableObjects[i].First, spawnableObjects[i].Second);
             spawnButton.transform.GetComponent<RectTransform>().position = spawnWindow.position + buttonPositions[i];
-            spawnButton.transform.GetChild(0).GetComponent<UnityEngine.UI.Text>().text = "Spawn " + prefabs[i].name;
+            spawnButton.transform.GetChild(0).GetComponent<UnityEngine.UI.Text>().text = "Spawn " + spawnableObjects[i].Second[0];
         }
     }
 

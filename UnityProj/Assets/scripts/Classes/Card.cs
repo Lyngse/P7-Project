@@ -13,6 +13,7 @@ public class Card : MonoBehaviour, IJsonable
     public string backImgUrl;
     public int id;
     public bool isFaceDown;
+    public int rotDeg = 180;
     WWWController wwwController;
 
     public void Instantiate(int id, string frontImgUrl, string backImgUrl, bool isFaceDown = true)

@@ -8,14 +8,9 @@ using UnityEngine;
 public class Figurine : MonoBehaviour, IJsonable
 {
     private int id;
-    private string figurineTextureUrl;
-    private string meshUrl;
+    public string figurineTextureUrl;
+    public string meshUrl;
     WWWController wwwcontroller;
-
-    private void Start()
-    {
-        Instantiate("http://www.berserk-games.com/images/TTS-Coin-Template.png", "http://pastebin.com/raw.php?i=00YWZ28Y");
-    }
 
     public void Instantiate(JSONNode json)
     {
@@ -23,16 +18,19 @@ public class Figurine : MonoBehaviour, IJsonable
         InstantiateFigurine();
     }
 
-    public void Instantiate(string figurineTexUrl, string meshURL)
+    public Figurine Instantiate(string name, string figurineTexUrl, string meshURL)
     {
         figurineTextureUrl = figurineTexUrl;
         meshUrl = meshURL;
-        wwwcontroller = GameObject.Find("SceneScripts").GetComponent<WWWController>();
-        StartCoroutine(wwwcontroller.GetFigurine(figurineTextureUrl, meshUrl, x => WrapFigurine(x.First, x.Second)));
+        this.name = name;
+        InstantiateFigurine();
+        return this;
     }
 
     public void InstantiateFigurine()
     {
+        if (GetComponent<Transform>() == null)
+            return;
         wwwcontroller = GameObject.Find("SceneScripts").GetComponent<WWWController>();
         StartCoroutine(wwwcontroller.GetFigurine(figurineTextureUrl, meshUrl, x => WrapFigurine(x.First, x.Second)));
     }
@@ -46,13 +44,17 @@ public class Figurine : MonoBehaviour, IJsonable
         scale.x = -scale.x;
         transform.localScale = scale;
         transform.gameObject.tag = "Figurine";
+        transform.GetComponent<Rigidbody>().isKinematic = false;
     }
 
     public void fromJson(JSONNode json)
     {
-        this.id = json["index"].AsInt;
         this.figurineTextureUrl = json["figurineImage"].Value;
         this.meshUrl = json["mesh"].Value;
+        if (json["name"] != null)
+        {
+            this.name = json["name"].Value;
+        }
     }
 
     public JSONNode toJson()

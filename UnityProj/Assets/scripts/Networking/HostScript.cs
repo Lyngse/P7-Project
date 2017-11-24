@@ -10,7 +10,7 @@ using WebSocketSharp;
 class HostScript : NetworkScript
 {
 
-    public InputField codeField;
+    public Canvas overlayCanvas;
     ClientStateHandler clientStateHandler;
 
     private void Start()
@@ -21,6 +21,7 @@ class HostScript : NetworkScript
 
     protected override void onOpen()
     {
+        overlayCanvas.gameObject.SetActive(false);
         var options = new MessageOptions("host_connection");
         var message = new WebSocketMessage(options);
         var json = message.toJson();
@@ -30,6 +31,8 @@ class HostScript : NetworkScript
     protected override void onClose()
     {
         Debug.Log("Connection Lost!");
+        overlayCanvas.gameObject.SetActive(true);
+        GameObject.Find("ReconnectButton").GetComponent<Button>().enabled = true;
     }
 
     protected override void onMessage(string data)
@@ -42,7 +45,6 @@ class HostScript : NetworkScript
         {
             case "code":
                 code = options.code;
-                codeField.text = code;
                 Transform menuField = GameObject.Find("CodeField").transform.GetChild(0);
                 menuField.GetComponent<Text>().text = code;
                 break;
@@ -104,6 +106,15 @@ class HostScript : NetworkScript
         var wbm = new WebSocketMessage(options, package);
         var json = wbm.toJson();
         webSocket.Send(json.ToString());
+    }
+
+    public void reconnect()
+    {
+        if (webSocket.ReadyState != WebSocketState.Connecting)
+        {
+            webSocket.ConnectAsync();
+            GameObject.Find("ReconnectButton").GetComponent<Button>().enabled = false;
+        }
     }
 
     public void sendToAll(IJsonable message)

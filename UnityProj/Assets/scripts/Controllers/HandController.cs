@@ -191,7 +191,6 @@ public class HandController : MonoBehaviour
                     Card card = selectedObj.GetComponent<Card>();
                     card.isFaceDown = isFaceDown;
                     clientScript.sendToHost(card, "card");
-                    int i = handObjects.IndexOf(selectedObj);
                     handObjects.Remove(selectedObj);
                     updatePositions();
                     Destroy(selectedObj.gameObject);

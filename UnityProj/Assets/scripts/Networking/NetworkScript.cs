@@ -20,7 +20,7 @@ abstract class NetworkScript : MonoBehaviour
         webSocket.OnOpen += socketOnOpen;
         webSocket.OnMessage += socketOnMessage;
         webSocket.OnClose += socketOnClose;
-        Timer timer = new Timer(30000);
+        Timer timer = new Timer(500);
         timer.Elapsed += new ElapsedEventHandler(Ping);
         timer.Enabled = true;
     }
