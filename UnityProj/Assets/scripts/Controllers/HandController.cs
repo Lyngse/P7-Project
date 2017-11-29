@@ -28,13 +28,14 @@ public class HandController : MonoBehaviour
         float newSize = (goalHandWidth / Camera.main.aspect) / 2;
         Camera.main.orthographicSize = newSize;
 
-        for (int i = 0; i < 15; i++)
-        {
-            Transform cardTrans = Instantiate(cardPrefab);
-            cardTrans.GetComponent<Rigidbody>().isKinematic = true;
-            cardTrans.position = new Vector3(handObjects.Count * 7.5f, 0, 0);
-            handObjects.Add(cardTrans);
-        }
+        //for (int i = 0; i < 15; i++)
+        //{
+        //    Transform cardTrans = Instantiate(cardPrefab);
+        //    cardTrans.GetComponent<Rigidbody>().isKinematic = true;
+        //    cardTrans.localScale = new Vector3(7f, 10f, 1f);
+        //    cardTrans.position = new Vector3(handObjects.Count * 7.5f, 0, 0);
+        //    handObjects.Add(cardTrans);
+        //}
         
     }
 
@@ -206,6 +207,7 @@ public class HandController : MonoBehaviour
         Transform cardTrans = Instantiate(cardPrefab);
         cardTrans.GetComponent<Rigidbody>().isKinematic = true;
         cardTrans.position = new Vector3(handObjects.Count * 7.5f, 0, 0);
+        cardTrans.localScale = new Vector3(7f, 10f, 1f);
         Card card = cardTrans.GetComponent<Card>();
         card.Instantiate(jsonCard);
         handObjects.Add(cardTrans);
