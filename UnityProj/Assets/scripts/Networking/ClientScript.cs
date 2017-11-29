@@ -33,7 +33,7 @@ class ClientScript : NetworkScript
         var options = new MessageOptions("client_connection", code);
         var message = new WebSocketMessage(options);
         var json = message.toJson();
-        webSocket.Send(json.ToString());
+        webSocket.SendString(json.ToString());
     }
 
     protected override void onOpen()
@@ -43,7 +43,7 @@ class ClientScript : NetworkScript
 
     protected override void onClose()
     {
-        Debug.Log("Connection lost!");
+        
         resetValues();
         connectButton.interactable = false;
         SceneManager.LoadScene("MenuScene", LoadSceneMode.Single);
@@ -51,14 +51,8 @@ class ClientScript : NetworkScript
 
     public void exit()
     {
-        if(webSocket.IsAlive)
-            webSocket.Close();
-        else
-        {
-            resetValues();
-            connectButton.interactable = false;
-            SceneManager.LoadScene("MenuScene", LoadSceneMode.Single);
-        }
+        onClose();
+        webSocket.Close();
 
     }
 
@@ -135,7 +129,7 @@ class ClientScript : NetworkScript
         var options = new MessageOptions("client_to_host", code, myColor, packageType);
         var wbm = new WebSocketMessage(options, package);
         var json = wbm.toJson();
-        webSocket.Send(json.ToString());
+        webSocket.SendString(json.ToString());
     }
 
     public void changeColor(int newColorInt)
@@ -146,6 +140,6 @@ class ClientScript : NetworkScript
         var package = new ColorChangePackage(myColor, newColor);
         var wbm = new WebSocketMessage(options, package);
         var json = wbm.toJson();
-        webSocket.Send(json.ToString());
+        webSocket.SendString(json.ToString());
     }
 }

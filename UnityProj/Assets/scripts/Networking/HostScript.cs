@@ -25,7 +25,7 @@ class HostScript : NetworkScript
         var options = new MessageOptions("host_connection");
         var message = new WebSocketMessage(options);
         var json = message.toJson();
-        webSocket.Send(json.ToString());
+        webSocket.SendString(json.ToString());
     }
 
     protected override void onClose()
@@ -105,16 +105,12 @@ class HostScript : NetworkScript
         var options = new MessageOptions("host_to_client", code, clientColor, packageType);
         var wbm = new WebSocketMessage(options, package);
         var json = wbm.toJson();
-        webSocket.Send(json.ToString());
+        webSocket.SendString(json.ToString());
     }
 
     public void reconnect()
     {
-        if (webSocket.ReadyState != WebSocketState.Connecting)
-        {
-            webSocket.ConnectAsync();
-            GameObject.Find("ReconnectButton").GetComponent<Button>().enabled = false;
-        }
+        StartCoroutine(connectToWebsocket());
     }
 
     public void sendToAll(IJsonable message)

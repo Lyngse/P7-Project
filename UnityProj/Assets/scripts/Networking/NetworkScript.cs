@@ -6,45 +6,67 @@ using WebSocketSharp;
 using SimpleJSON;
 using UnityEngine;
 using System.Timers;
+using System.Collections;
 
 abstract class NetworkScript : MonoBehaviour
 {
-    protected WebSocket webSocket = new WebSocket("ws://p7-webserver.herokuapp.com");
+    protected WebSocket webSocket = new WebSocket(new Uri("ws://p7-webserver.herokuapp.com"));
+    bool open = false;
     protected string code = "";
     public Queue<Tuple<Utility.websocketEvent, string>> bufferQueue = new Queue<Tuple<Utility.websocketEvent, string>>();
 
     protected virtual void Start()
     {
         Application.runInBackground = true;
-        webSocket.ConnectAsync();
-        webSocket.OnOpen += socketOnOpen;
-        webSocket.OnMessage += socketOnMessage;
-        webSocket.OnClose += socketOnClose;
+        StartCoroutine(connectToWebsocket());
+        //webSocket.OnMessage += socketOnMessage;
+        //webSocket.OnClose += socketOnClose;
         Timer timer = new Timer(500);
         timer.Elapsed += new ElapsedEventHandler(Ping);
         timer.Enabled = true;
     }
+
+    protected IEnumerator connectToWebsocket()
+    {
+        webSocket = new WebSocket(new Uri("ws://p7-webserver.herokuapp.com"));
+        yield return StartCoroutine(webSocket.Connect());
+        onOpen();
+        open = true;
+        
+    }
     
     private void Update()
     {
-        if (bufferQueue.Count > 0)
+        string recievedString = webSocket.RecvString();
+        if(recievedString != null)
         {
-            var websocketEvent = bufferQueue.Dequeue();
-            switch (websocketEvent.First)
-            {
-                case Utility.websocketEvent.Open:
-                    onOpen();
-                    break;
-                case Utility.websocketEvent.Close:
-                    onClose();
-                    break;
-                case Utility.websocketEvent.Message:
-                    onMessage(websocketEvent.Second);
-                    break;
-                default:
-                    break;
-            }
+            onMessage(recievedString);
         }
+        if(webSocket.error != null && open)
+        {
+            Debug.Log(webSocket.error);
+            webSocket.Close();
+            open = false;
+            onClose();
+        }
+        //if (bufferQueue.Count > 0)
+        //{
+        //    var websocketEvent = bufferQueue.Dequeue();
+        //    switch (websocketEvent.First)
+        //    {
+        //        case Utility.websocketEvent.Open:
+        //            onOpen();
+        //            break;
+        //        case Utility.websocketEvent.Close:
+        //            onClose();
+        //            break;
+        //        case Utility.websocketEvent.Message:
+        //            onMessage(websocketEvent.Second);
+        //            break;
+        //        default:
+        //            break;
+        //    }
+        //}
     }
 
     private void OnApplicationQuit()
@@ -54,7 +76,8 @@ abstract class NetworkScript : MonoBehaviour
 
     private void Ping(object source, ElapsedEventArgs e)
     {
-        webSocket.Ping();
+        if(open)
+            webSocket.SendString(new JSONString("ping").ToString());
     }
 
     protected abstract void onClose();
