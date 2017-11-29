@@ -84,6 +84,17 @@ class ClientScript : NetworkScript
                 Debug.Log("host disconnected");
                 resetValues();
                 break;
+            case "error":
+                string package = message["package"];
+                if(package.StartsWith("no game with code"))
+                {
+                    Debug.Log("No game found");
+                }
+                else if(package == "game is full")
+                {
+                    Debug.Log("Game is full");
+                }
+                break;
             default:
                 break;
         }
