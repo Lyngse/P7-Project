@@ -16,7 +16,7 @@ public class RollDie : MonoBehaviour, IPointerUpHandler {
 
     IEnumerator Roll()
     {
-        var force = Random.Range(50, 75);
+        var force = Random.Range(72, 125);
         thisBody.AddForce(0, force, 0);
         yield return new WaitForSeconds(0.05f);
         var speed = Random.Range(10, 25);
