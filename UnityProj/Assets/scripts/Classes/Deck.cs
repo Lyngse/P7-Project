@@ -32,16 +32,13 @@ public class Deck : MonoBehaviour {
                 0, 2, 1,
                 1, 2, 3,
             };
+    
 
-    private void Start()
-    {
-        InstantiateDeck(deckSourceUrl, cardBackUrl);
-    }
-
-    public void InstantiateDeck(string frontUrl, string backUrl)
+    public void InstantiateDeck(string name, string frontUrl, string backUrl)
     {
         deckSourceUrl = frontUrl;
         cardBackUrl = backUrl;
+        this.name = name;
         wwwcontroller = GameObject.Find("SceneScripts").GetComponent<WWWController>();
         ImageForDeck(Resources.Load<Texture2D>("loading"), wwwcontroller, false);
         _cards = new List<int>(Enumerable.Range(0, deckSize));

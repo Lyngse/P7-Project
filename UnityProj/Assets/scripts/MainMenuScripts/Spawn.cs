@@ -22,10 +22,14 @@ public class Spawn : MonoBehaviour, IPointerUpHandler
             case "Figurine":
                 currObject.GetComponent<Figurine>().Instantiate(args[0], args[1], args[2]);
                 break;
+            case "Deck":
+                currObject.GetComponent<Deck>().InstantiateDeck(args[0], args[1], args[2]);
+                break;
             default:
+                currObject.name = args[0];
                 break;
         }
-        currObject.transform.position = startingPosition;
+        //currObject.transform.position = startingPosition;
     }
 
     public void instatiate(GameObject pFab, string[] args)

@@ -40,7 +40,7 @@ public class Figurine : MonoBehaviour, IJsonable
         transform.GetComponent<MeshRenderer>().material.mainTexture = texture;
         transform.GetComponent<MeshFilter>().mesh = mesh;
         transform.GetComponent<MeshCollider>().sharedMesh = mesh;  
-        var scale = transform.localScale;
+        var scale = Vector3.one;
         scale.x = -scale.x;
         transform.localScale = scale;
         transform.gameObject.tag = "Figurine";
