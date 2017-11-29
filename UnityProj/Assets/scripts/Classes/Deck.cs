@@ -154,7 +154,7 @@ public class Deck : MonoBehaviour {
             }
             
             newCard.GetComponent<Card>().Instantiate(cardID, deckSourceUrl, cardBackUrl, isFaceDown);
-            newCard.position = new Vector3((transform.position.x + 7), 5, transform.position.z);
+            newCard.position = new Vector3((transform.position.x + 2), 1, transform.position.z);
             newCard.gameObject.SetActive(true);
             ChangeHeight();
             _cards.Remove(cardID);

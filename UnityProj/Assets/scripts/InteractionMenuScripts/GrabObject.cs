@@ -9,7 +9,7 @@ public class GrabObject : MonoBehaviour
     private Vector3 screenPoint;
     private Vector3 offset;
     private Transform objectTransform;
-    private Plane dragPlane = new Plane(Vector3.up, new Vector3(0, 3, 0));
+    private Plane dragPlane = new Plane(Vector3.up, new Vector3(0, 1, 0));
 
     public void MoveObject(TouchInfo target, Touch touch)
     {
