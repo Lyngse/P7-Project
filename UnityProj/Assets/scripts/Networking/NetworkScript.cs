@@ -10,8 +10,9 @@ using System.Collections;
 
 abstract class NetworkScript : MonoBehaviour
 {
-    protected WebSocket webSocket = new WebSocket(new Uri("ws://p7-webserver.herokuapp.com"));
+    protected WebSocket webSocket = new WebSocket(new Uri("wss://p7-webserver.herokuapp.com"));
     bool open = false;
+    float pingTimer;
     protected string code = "";
     public Queue<Tuple<Utility.websocketEvent, string>> bufferQueue = new Queue<Tuple<Utility.websocketEvent, string>>();
 
@@ -21,14 +22,12 @@ abstract class NetworkScript : MonoBehaviour
         StartCoroutine(connectToWebsocket());
         //webSocket.OnMessage += socketOnMessage;
         //webSocket.OnClose += socketOnClose;
-        Timer timer = new Timer(500);
-        timer.Elapsed += new ElapsedEventHandler(Ping);
-        timer.Enabled = true;
+        var pingTimer = Time.realtimeSinceStartup;
     }
 
     protected IEnumerator connectToWebsocket()
     {
-        webSocket = new WebSocket(new Uri("ws://p7-webserver.herokuapp.com"));
+        webSocket = new WebSocket(new Uri("wss://p7-webserver.herokuapp.com"));
         yield return StartCoroutine(webSocket.Connect());
         onOpen();
         open = true;
@@ -48,6 +47,16 @@ abstract class NetworkScript : MonoBehaviour
             webSocket.Close();
             open = false;
             onClose();
+        }
+        if (open)
+        {
+            float deltaTime = Time.realtimeSinceStartup - pingTimer;
+            if(deltaTime > 500)
+            {
+                Debug.Log("ping");
+                webSocket.SendString(new JSONString("ping").ToString());
+                pingTimer = Time.realtimeSinceStartup;
+            }
         }
         //if (bufferQueue.Count > 0)
         //{
@@ -72,12 +81,6 @@ abstract class NetworkScript : MonoBehaviour
     private void OnApplicationQuit()
     {
         webSocket.Close();
-    }
-
-    private void Ping(object source, ElapsedEventArgs e)
-    {
-        if(open)
-            webSocket.SendString(new JSONString("ping").ToString());
     }
 
     protected abstract void onClose();
