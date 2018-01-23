@@ -86,7 +86,7 @@ public class HandController : MonoBehaviour
         {
             //selectedObj.position = oldPos;
             selectedObj.localScale = new Vector3(7f, 10f, 1f);
-            selectedObj.transform.Translate(new Vector3(0f, 0f, -1f));
+            selectedObj.transform.Translate(new Vector3(0f, 0f, 1f));
             selectedObj.GetComponent<LineRenderer>().enabled = false;
             selectedObj = null;
             cardMenuCanvas.gameObject.SetActive(false);
@@ -104,7 +104,7 @@ public class HandController : MonoBehaviour
                 //selectedObj.position = new Vector3(camPos.x, camPos.y - 11, camPos.z);
                 var scale = selectedObj.localScale;
                 selectedObj.localScale = new Vector3(scale.x * 1.2f, scale.y * 1.2f, scale.z);
-                selectedObj.transform.Translate(new Vector3(0f, 0f, 1f));
+                selectedObj.transform.Translate(new Vector3(0f, 0f, -1f));
                 selectedObj.GetComponent<LineRenderer>().enabled = true;
                 if (hit.transform.tag == "Card")
                 {
@@ -178,7 +178,7 @@ public class HandController : MonoBehaviour
         }
         if(selectedObj != null)
         {
-            selectedObj.transform.Translate(new Vector3(0f, 0f, 1f));
+            selectedObj.transform.Translate(new Vector3(0f, 0f, -1f));
         }
     }
 

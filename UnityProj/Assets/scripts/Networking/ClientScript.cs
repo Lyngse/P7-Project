@@ -25,6 +25,18 @@ class ClientScript : NetworkScript
         connectButton = connectCanvas.GetComponentInChildren<Button>();
         connectButton.onClick.AddListener(clientConnect);  
         colorText = colorInfo.GetComponentsInChildren<Text>().First(text => text.name == "colorText");
+        //JSONNode json = new JSONObject();
+        //json.Add("FrontImage", new JSONString("https://i.imgur.com/iSAo3YC.jpg"));
+        //json.Add("BackImage", new JSONString("https://i.imgur.com/PwhF8u0.jpg"));
+        //json.Add("isFaceDown", new JSONBool(false));
+        //json.Add("index", new JSONNumber(0));
+        //for (int i = 0; i < 12; i++)
+        //{
+        //    json.Remove("index");
+        //    json.Add("index", new JSONNumber(i));
+        //    handlePackage("card", json);
+        //}
+
     }
 
     void clientConnect()

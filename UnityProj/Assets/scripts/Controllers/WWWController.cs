@@ -10,6 +10,7 @@ public class WWWController: MonoBehaviour
 {
     Dictionary<string, Tuple<Texture2D, Texture2D>> deckDict = new Dictionary<string, Tuple<Texture2D, Texture2D>>();
     Dictionary<string, Tuple<Texture2D, Mesh>> figurineDict = new Dictionary<string, Tuple<Texture2D, Mesh>>();
+    List<string> currentURLRequests = new List<string>();
 
     public IEnumerator GetFigurine(string figurineUrl, string meshUrl, Action<Tuple<Texture2D, Mesh>> callback)
     {
@@ -75,6 +76,10 @@ public class WWWController: MonoBehaviour
     {
         string identifier = frontUrl + backUrl;
         Tuple<Texture2D, Texture2D> result;
+        while(currentURLRequests.Contains(frontUrl) || currentURLRequests.Contains(backUrl))
+        {
+            yield return 0;
+        }
         if (deckDict.ContainsKey(identifier))
         {
             result = deckDict[identifier];
@@ -83,11 +88,14 @@ public class WWWController: MonoBehaviour
         {
             WWW frontWWW = new WWW(frontUrl);
             WWW backWWW = new WWW(backUrl);
+            currentURLRequests.Add(frontUrl);
+            currentURLRequests.Add(backUrl);
             yield return frontWWW;
             yield return backWWW;
             result = new Tuple<Texture2D, Texture2D>(frontWWW.texture, backWWW.texture);
-            if(!deckDict.ContainsKey(identifier))
-                deckDict.Add(identifier, result);
+            currentURLRequests.Remove(frontUrl);
+            currentURLRequests.Remove(backUrl);
+            deckDict.Add(identifier, result);
         }        
         callback(result);
     }
