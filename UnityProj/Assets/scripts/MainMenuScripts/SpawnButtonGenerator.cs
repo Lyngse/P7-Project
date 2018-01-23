@@ -22,13 +22,13 @@ public class SpawnButtonGenerator : MonoBehaviour {
 
         prefabs = Resources.LoadAll<GameObject>("Prefabs");
         GameObject figurinePrefab = Resources.Load<GameObject>("Prefabs/Figurine");
-        spawnableObjects.Add(Tuple.New(figurinePrefab, new string[] { "Red pawn", "red", "http://pastebin.ca/3399547" }));
-        spawnableObjects.Add(Tuple.New(figurinePrefab, new string[] { "Green pawn", "green", "http://pastebin.ca/3399547" }));
-        spawnableObjects.Add(Tuple.New(figurinePrefab, new string[] { "Blue pawn", "blue", "http://pastebin.ca/3399547" }));
-        spawnableObjects.Add(Tuple.New(figurinePrefab, new string[] { "Yellow pawn", "yellow", "http://pastebin.ca/3399547" }));
+        spawnableObjects.Add(Tuple.New(figurinePrefab, new string[] { "Red pawn", "red", "https://pastebin.ca/3399547" }));
+        spawnableObjects.Add(Tuple.New(figurinePrefab, new string[] { "Green pawn", "green", "https://pastebin.ca/3399547" }));
+        spawnableObjects.Add(Tuple.New(figurinePrefab, new string[] { "Blue pawn", "blue", "https://pastebin.ca/3399547" }));
+        spawnableObjects.Add(Tuple.New(figurinePrefab, new string[] { "Yellow pawn", "yellow", "https://pastebin.ca/3399547" }));
 
         GameObject deckPrefab = Resources.Load<GameObject>("Prefabs/Deck");
-        spawnableObjects.Add(Tuple.New(deckPrefab, new string[] { "Deck", "http://i.imgur.com/iSAo3YC.jpg", "http://i.imgur.com/PwhF8u0.jpg" }));
+        spawnableObjects.Add(Tuple.New(deckPrefab, new string[] { "Deck", "https://i.imgur.com/iSAo3YC.jpg", "https://i.imgur.com/PwhF8u0.jpg" }));
 
         GameObject diePrefab = Resources.Load<GameObject>("Prefabs/LudoD6");
         spawnableObjects.Add(Tuple.New(diePrefab, new string[] { "Ludo Die", "", "" }));
