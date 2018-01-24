@@ -19,7 +19,7 @@ abstract class NetworkScript : MonoBehaviour
     {
         Application.runInBackground = true;
         StartCoroutine(connectToWebsocket());
-        var pingTimer = Time.realtimeSinceStartup;
+        pingTimer = Time.realtimeSinceStartup;
     }
 
     protected IEnumerator connectToWebsocket()
@@ -47,9 +47,8 @@ abstract class NetworkScript : MonoBehaviour
         if (open)
         {
             float deltaTime = Time.realtimeSinceStartup - pingTimer;
-            if(deltaTime > 500)
+            if(deltaTime > 0.5)
             {
-                Debug.Log("ping");
                 webSocket.SendString(new JSONString("ping").ToString());
                 pingTimer = Time.realtimeSinceStartup;
             }
